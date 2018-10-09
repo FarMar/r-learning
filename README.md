@@ -11,9 +11,11 @@ _________
 ## AFDS course material from Terry Neeman
 
 ###Chapter 0 
+
 Covered background to statistical modelling and pitfalls of poor design.
 
 ###Chapter 1 
+
 Starts on t-tests then simple linear models for the wheat dataset from agridat. 
 
 A useful data-wringling trick is given here:
@@ -47,5 +49,7 @@ wheat_L <- filter(wheat, Variation == "Low")
 
 Now data is all sorted, the initial t-tests and 1-way ANOVA run simply. The `summary(lm1)` command gives info on the residuals and coefficients, goodness of fit, etc. `emmeans(lm1, ~Variety)` provides output of estimated marginal means of model.
 
-The final task is to plot the output of the model. 
+The final task for this sub-section is to plot the output of the model. 
 Check out `Chapter_1.Rmd` in the outputs folder for mopre in-depth info.
+
+Further info for subsequent chapters is in the R Markdown file.

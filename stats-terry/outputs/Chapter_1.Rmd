@@ -11,7 +11,9 @@ library("tidyverse")
 library("emmeans")
 ```
 
-Chapter 1 starts on t-tests then simple linear models for the wheat dataset from agridat. 
+# Chapter 1 starts on t-tests then simple linear models for the wheat dataset from agridat. 
+
+## Part 1 - T-tests and simple ANOVA
 
 First task is to sort data and get it ready for analysis:
 
@@ -64,7 +66,7 @@ lm1.results<-summary(emmeans(lm1,~Variety))
 ggplot(lm1.results, aes(Variety, emmean, fill=Variety)) +
   geom_bar(stat="identity", width=.4) +
   geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=.2) + 
-                  ylim(0,5) +
+                  ylim(0,4) +
                   labs(y = 'Mean Yield (t/hectare)') 
 ```
 
@@ -77,3 +79,50 @@ Going though the structure of this ggplot command, a few things are happening:
 5. Y axis limits are imposed
 6. The proper y-axis label is then added. Note this was very particular and didn't like double quotes. There's lots of info on getting sub/superscript, symbols, etc. on axis titles available. Best searched on a case-by-case basis.
 
+================
+
+## Part 2 - Multi-factor ANOVA
+
+```{r, echo=TRUE, results="hide", warning=FALSE}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+wheat2 <- read_csv("data/working/wheat yield PLUS.csv")
+str(wheat2)
+```
+
+Then, we force "Standard" to be plotted first, with the other varieties following, and do the plot
+
+```{r, echo=TRUE, out.width = "50%"}
+wheat2$Variety <- factor(wheat2$Variety, levels = c("Standard", "New", "NewPlus"))
+
+ggplot(wheat2, aes(Variety, Yield, colour=Variety)) + 
+  geom_point()
+```
+
+Next, a simple ANOVA to test for significance of difference in Yield between the three Varieties
+
+```{r, echo=TRUE}
+lm2 <- lm(Yield ~ Variety, data = wheat2)
+anova(lm2)
+summary(lm2)
+emmeans(lm2, pairwise~Variety)
+```
+Here, because we have three factors, we ask `emmeans` to conduct Tukey's pairwise comparisons with the `pairwise` function in front of the `~Variety`. We can see that both New and NewPlus differ from Standard, but not from each other.
+
+Next is a quick eyeball of the residuals:
+
+```{r echo=TRUE, out.width = "50%"}
+plot(lm2,which=1)
+plot(lm2,which=2)
+```
+
+As all looks good, it's on to the final masterpiece, code slightly modified from above:
+
+```{r echo=TRUE, out.width = "50%"}
+lm2.results<-summary(emmeans(lm2,~Variety))
+
+ggplot(lm2.results, aes(Variety, emmean, fill=Variety)) +
+  geom_bar(stat="identity", width=.4) +
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=.2) + 
+  ylim(0,4) +
+  labs(y = 'Mean Yield (t/hectare)')
+```
