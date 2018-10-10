@@ -42,4 +42,4 @@ rsconnect/
 *.pdf
 
 # Highstat material
-R-Course/
+/R-Course/*
