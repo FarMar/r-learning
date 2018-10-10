@@ -75,3 +75,22 @@ anova(lm4)
 lm5<-lm(yield~Var+Loc+year, data = barley2)
 anova(lm5)
 emmeans(lm5, pairwise~Var)
+
+#Part 4 - relationships between two variables as affected by a factor
+forest<-read_csv("data/working/Prac 3 forest.csv")
+str(forest)
+View(forest)
+
+ggplot(forest,aes(Density,QuadDiam,colour=StandType))+
+  geom_point(size=5)
+
+ggplot(forest,aes(Density,QuadDiam,colour=StandType))+
+  geom_point(size=5) +
+  stat_smooth(method=lm, se=FALSE)
+
+lm6<-lm(Density~QuadDiam*StandType, data = forest)
+anova(lm6)
+
+lm7<-lm(Density~QuadDiam+StandType, data = forest)
+anova(lm7)
+emmeans(lm7, pairwise~StandType)

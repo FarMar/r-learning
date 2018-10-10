@@ -155,3 +155,63 @@ Here, we can see that M and S had a significantly lower yield than T, but all ot
 plot(lm5, which=1) 
 plot(lm5, which=2)
 ```
+
+All looks good
+
+# Part 4 - Relationships between two variables as affected by a factor
+Research question: What is the relationship between mean quadratic diameter and plot density in Nothofagus forest in the Andes? Does this relationship differ between tree species?
+
+Experimental set-up: 
+
+* 41 plots
+* 3 species (StandTypes)
+* Outcome measure: Plot Density
+* Factors: StandType, QuadDiam
+* Blocking factors: ?
+
+```{R, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+forest<-read_csv("data/working/Prac 3 forest.csv")
+```
+
+Quick visual exploration of the data reveals a general trend of decreased quadratic diameter with increased density. Is this affected by tree species?
+
+```{R, echo=TRUE, out.width = "50%"}
+ggplot(forest,aes(Density,QuadDiam,colour=StandType))+
+  geom_point()
+```
+
+Is this affected by tree species?
+
+```{R, echo=TRUE, out.width = "50%"}
+ggplot(forest,aes(Density,QuadDiam,colour=StandType))+
+  geom_point() +
+  stat_smooth(method=lm, se=FALSE)
+```
+
+Possibly.... So, let's try a model with the interaction term to test that assertion:
+
+```{R, echo=TRUE}
+lm6<-lm(Density~QuadDiam*StandType, data = forest)
+anova(lm6)
+```
+
+As we can see, whilst both Density and QuadDiam are strongly significant, there is no sign of a significant interaction, thus a more appropriate additive model can be used:
+
+```{R, echo=TRUE}
+lm7<-lm(Density~QuadDiam+StandType, data = forest)
+anova(lm7)
+```
+
+Stand type is strongly significant, calling emmeans to conduct the Tukey's multiple comparisons...
+
+```{R, echo=TRUE}
+emmeans(lm7, pairwise~StandType)
+```
+
+We can see here Coigue is different to both Rauli and Roble, but Rauli and Roble do not differ from each other. Let's just confirm that the model assumptions aren't too awry, and we're done here.
+
+```{R, echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+plot(lm7, which=1) 
+plot(lm7, which=2)
+```
