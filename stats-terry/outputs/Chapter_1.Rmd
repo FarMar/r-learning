@@ -1,0 +1,128 @@
+---
+title: "Chapter 1"
+author: "Mark Farrell"
+date: "09/10/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+library("emmeans")
+```
+
+# Chapter 1 starts on t-tests then simple linear models for the wheat dataset from agridat. 
+
+## Part 1 - T-tests and simple ANOVA
+
+First task is to sort data and get it ready for analysis:
+
+```{r data_sort, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+wheat <- read_csv("data/working/wheat yield.csv")
+as_factor(wheat$Variety)
+wheat$Variety <- factor(wheat$Variety, levels = c("Standard", "New"))
+wheat_H <- filter(wheat, Variation == "High")
+wheat_L <- filter(wheat, Variation == "Low")
+
+```
+
+A simple plot lets us see the data
+
+
+```{r out.width = "50%", echo=TRUE}
+ggplot(wheat, aes(Variety, Yield, colour=Variety)) + 
+  geom_point() + 
+  facet_wrap(~Variation)
+```
+
+
+Now data is all sorted and we've had a peek at what it looks like, simple t-tests run easily. 
+
+```{r t-testing, echo=TRUE}
+t.test(Yield~Variety, data = wheat_H, var.equal=TRUE)
+t.test(Yield~Variety, data = wheat_L, var.equal=TRUE)
+```
+
+As can be seen, there's no significant effect of Variety in the high variance half of the dataset, but in the low variance half, _P_ << 0.05
+
+Given that t-tests are a bit pasé, and also ultimately inappropriate for a dataset like this (noting trhere are really two factors), we'll explore linear modelling.
+
+```{r, echo=TRUE}
+lm1 <- lm(Yield ~ Variety, data = wheat_L)
+anova(lm1)
+```
+
+Here we see that for the low variance half of the dataset, there is a significant effect of variety. To look closer at the fitted model, we'll run `summary(lm1)` to give info on the residuals and coefficients, goodness of fit, etc. and `emmeans(lm1, ~Variety)` to provide output of estimated marginal means of model.
+```{r}
+summary(lm1)
+emmeans(lm1, ~Variety)
+```
+The final task is to plot the output of the model. This took a bit of wrangling, but a passable ggplot output solution is presented below:
+
+```{r echo=TRUE, out.width = "50%"}
+lm1.results<-summary(emmeans(lm1,~Variety))
+
+ggplot(lm1.results, aes(Variety, emmean, fill=Variety)) +
+  geom_bar(stat="identity", width=.4) +
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=.2) + 
+                  ylim(0,4) +
+                  labs(y = 'Mean Yield (t/hectare)') 
+```
+
+Going though the structure of this ggplot command, a few things are happening:
+
+1. First we make a new data frame from the summary outputs of `emmeans`
+2. This is then plotted with Variety on the x-axis and emmean on the y-axis, which is the output of the model. Fill is purely for prettiness
+3. `stat="identity"` tells R to use the y values for the height of the bars
+4. Error bars are calculated from the emmean +/- SE within the `lm1.results` data frame
+5. Y axis limits are imposed
+6. The proper y-axis label is then added. Note this was very particular and didn't like double quotes. There's lots of info on getting sub/superscript, symbols, etc. on axis titles available. Best searched on a case-by-case basis.
+
+================
+
+## Part 2 - Multi-factor ANOVA
+
+```{r, echo=TRUE, results="hide", warning=FALSE}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+wheat2 <- read_csv("data/working/wheat yield PLUS.csv")
+str(wheat2)
+```
+
+Then, we force "Standard" to be plotted first, with the other varieties following, and do the plot
+
+```{r, echo=TRUE, out.width = "50%"}
+wheat2$Variety <- factor(wheat2$Variety, levels = c("Standard", "New", "NewPlus"))
+
+ggplot(wheat2, aes(Variety, Yield, colour=Variety)) + 
+  geom_point()
+```
+
+Next, a simple ANOVA to test for significance of difference in Yield between the three Varieties
+
+```{r, echo=TRUE}
+lm2 <- lm(Yield ~ Variety, data = wheat2)
+anova(lm2)
+summary(lm2)
+emmeans(lm2, pairwise~Variety)
+```
+Here, because we have three factors, we ask `emmeans` to conduct Tukey's pairwise comparisons with the `pairwise` function in front of the `~Variety`. We can see that both New and NewPlus differ from Standard, but not from each other.
+
+Next is a quick eyeball of the residuals:
+
+```{r echo=TRUE, out.width = "50%"}
+plot(lm2,which=1)
+plot(lm2,which=2)
+```
+
+As all looks good, it's on to the final masterpiece, code slightly modified from above:
+
+```{r echo=TRUE, out.width = "50%"}
+lm2.results<-summary(emmeans(lm2,~Variety))
+
+ggplot(lm2.results, aes(Variety, emmean, fill=Variety)) +
+  geom_bar(stat="identity", width=.4) +
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=.2) + 
+  ylim(0,4) +
+  labs(y = 'Mean Yield (t/hectare)')
+```

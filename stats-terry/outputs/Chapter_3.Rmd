@@ -1,0 +1,93 @@
+---
+title: "Chapter 3"
+author: "Mark Farrell"
+date: "10/10/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+library("emmeans")
+```
+
+# Part 1 - Can drought tolerance in sorghum be improved through genetic modification?
+
+This exercise explores two-factpor ANOVA. First, we need to import the data.
+
+```{r data_sort, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+data2 <- read_csv("data/working/Prac 3 mock LWR.csv")
+```
+
+With data imported, a simple plot is produces to both show all the data (dots) and its variance structure (b&w):
+
+```{R, echo=TRUE, out.width = "50%"}
+ggplot(data2, aes(GeneB,LWR,colour=GeneA)) + 
+  geom_boxplot() + 
+  geom_point(position=position_dodge(0.75))
+```
+
+Now, we can fit a two-factor full factorial model to the data, and test for significance
+
+```{R, echo=TRUE}
+lm1<-lm(LWR~GeneA*GeneB, data = data2)
+anova(lm1)
+```
+
+As can be seen, both genes AA and BB have a significant impact on leaf water retention (LWR), and there is also a slightly significan interaction effect. To probe this further, we can then output the model summary, and ask emmeans to produce pairwise comparison outputs.
+
+```{R, echo=TRUE}
+summary(lm1)
+emmeans(lm1, pairwise~GeneA|GeneB)
+emmeans(lm1, pairwise~GeneB|GeneA)
+```
+
+This outputs all the multiple comparisons, allowing us to see if bb == or =/= BB when aa or AA are present, and vice versa. 
+
+Finally, we need to check the model assumptions using the simple outputs provided by `plot`.
+
+```{R, echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+plot(lm1, which=1) 
+plot(lm1, which=2)
+```
+
+All looks good :-)
+
+# Part 2 Which cabbage cultivar has the higher Vitamin C content on average?
+
+Here, we're exploring model selection. We have two cabbage cultivars (factor 1) planted on three different days (factor 2)
+
+```{R, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+cabbage<-read_csv("data/working/Prac 3 cabbage data.csv")
+```
+
+Plot to see the data:
+
+```{R, echo=TRUE, out.width = "50%"}
+ggplot(cabbage,aes(Date,VitC,colour=Cult))+
+  geom_boxplot() +
+  geom_point(position=position_dodge(0.75))
+```
+
+First, we'll use a full factorial design to confirm no interaction between planting date and cultivar:
+
+```{R, echo=TRUE}
+lm2<-lm(VitC~Cult*Date, data = cabbage)
+anova(lm2)
+```
+
+As it can be seen that there isn't an interaction, a more appropriate model is an additive model. This is a better test of the question: "Does cultivar affect vitamin C levels?"
+
+```{R, echo=TRUE}
+lm3<-lm(VitC~Cult+Date, data = cabbage)
+anova(lm3)
+emmeans(lm3, pairwise~Cult)
+```
+
+It's clear that c39 has lower vitamin C levels than c52, by 12.9 +/- 1.8 units.
+```{R, echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+plot(lm3, which=1) 
+plot(lm3, which=2)
+```
