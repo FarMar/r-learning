@@ -56,3 +56,22 @@ barley<-read_csv("data/working/Prac 3 barley yield.csv")
 #Re-structure data to be tidy using gather
 barley2<-gather(barley, key="year", value="yield", 4:5)
 str(barley2)
+
+#Plot to see what it looks like
+
+ggplot(barley2,aes(Var,yield,colour=year))+
+  geom_boxplot() +
+  geom_point(position=position_dodge(0.75))
+
+ggplot(barley2,aes(year,yield,colour=Var))+
+  geom_boxplot() +
+  geom_point(position=position_dodge(0.75))
+
+#Fit models
+
+lm4<-lm(yield~Var+Loc, data = barley2)
+anova(lm4)
+
+lm5<-lm(yield~Var+Loc+year, data = barley2)
+anova(lm5)
+emmeans(lm5, pairwise~Var)

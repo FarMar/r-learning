@@ -116,4 +116,42 @@ barley2<-gather(barley, key="year", value="yield", 4:5)
 str(barley2)
 ```
 
-Here, we're making a new tibble `barley2` from `barley`
+Here, we're making a new tibble `barley2` from `barley`. Once this has been achieved, we can plot the data a couple of different ways to look at whether or not year is important when assessing the impact of barley variety on yield.
+
+```{R, echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(barley2,aes(Var,yield,colour=year))+
+  geom_boxplot() +
+  geom_point(position=position_dodge(0.75))
+ggplot(barley2,aes(year,yield,colour=Var))+
+  geom_boxplot() +
+  geom_point(position=position_dodge(0.75))
+```
+
+From these, it's pretty clear there isn't an interaction with year at the whole dataset level, with yields likely significantly higher in Y1 than Y2.
+
+First we'll try with location and variation in an additive model, but won't feed the model any info on year:
+
+```{R, echo=TRUE}
+lm4<-lm(yield~Var+Loc, data = barley2)
+anova(lm4)
+```
+
+This retuns a strongly significant impact of location on yield (not the question), but only slightly significant impact of variety (the actual question). Perhaps if we include year in the model this will help address some of teh unexplained variance and we might get a clearer picture of how important variety is.
+
+```{R, echo=TRUE}
+lm5<-lm(yield~Var+Loc+year, data = barley2)
+anova(lm5)
+```
+
+Yes, as predicted, year was significant, and its inclusion has actually increased the significance of the variance result as this has dealt with some of the unexplained variance in `lm4`. Now let's see which varieties are actually different:
+
+```{R, echo=TRUE}
+emmeans(lm5, pairwise~Var)
+```
+
+Here, we can see that M and S had a significantly lower yield than T, but all other varieties had limited impact on yield
+
+```{R, echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+plot(lm5, which=1) 
+plot(lm5, which=2)
+```
