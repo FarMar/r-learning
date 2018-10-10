@@ -53,3 +53,17 @@ The final task for this sub-section is to plot the output of the model.
 Check out `Chapter_1.Rmd` in the outputs folder for mopre in-depth info.
 
 Further info for subsequent chapters is in the R Markdown file.
+
+### Chapter 2
+This covered an introdution to experimental design
+
+### Chapter 3
+This provides an introduction to mean variance and statistical modelling. Details are again in the appropriate Rmd file. 
+
+All went smoothly. One useful top picked up from [Stack Overflow](https://stackoverflow.com/questions/37115276/control-alignment-of-two-side-by-side-plots-in-knitr)  was how to get the two diagnostics plot on the same line using knitR:
+
+```
+{r,echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+```
+
+This can obviously be fiddled with to work for whatever. Not sure if it works for ggplot outputs though.... Perhaps something to read up further on if knitRing becomes a more serious exercise for me.
