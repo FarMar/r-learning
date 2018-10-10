@@ -91,3 +91,29 @@ It's clear that c39 has lower vitamin C levels than c52, by 12.9 +/- 1.8 units.
 plot(lm3, which=1) 
 plot(lm3, which=2)
 ```
+
+Finally, assumptions for ANOVA look OK. Crack on...
+
+# Part 3 - model choices...
+
+Experimental set-up: 
+* 60 plots
+* 5 varieties: “M”, “P”, “S”, “T”, “V”
+* 6 locations: “C”,”D”, “GR”, “M”, “UF”, “W”
+* 2 crop years: 1930, 1931
+
+Research question: Compare yields of 5 varieties of barley
+
+```{R, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry")
+barley<-read_csv("data/working/Prac 3 barley yield.csv")
+```
+
+As this data is untidy (Y1 and Y2 need to be in long-form), we need to use the `gather` function in the tidyverse (https://tidyr.tidyverse.org/reference/gather.html) to fix things up.
+
+```{R, echo=TRUE}
+barley2<-gather(barley, key="year", value="yield", 4:5)
+str(barley2)
+```
+
+Here, we're making a new tibble `barley2` from `barley`

@@ -49,3 +49,10 @@ emmeans(lm3, pairwise~Cult)
 
 plot(lm3, which=1) 
 plot(lm3, which=2)
+
+#Part 3 - Which model to use?
+barley<-read_csv("data/working/Prac 3 barley yield.csv")
+
+#Re-structure data to be tidy using gather
+barley2<-gather(barley, key="year", value="yield", 4:5)
+str(barley2)
