@@ -90,7 +90,8 @@ Blocking factors
         
 _4 parameter model (plus random effects)_
 
-```{r data_sort, echo=TRUE, results="hide"}
+```{r, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry/")
 drought<-read_csv("data/working/Prac 4 drought data.csv")
 str(drought)
 
@@ -101,3 +102,33 @@ drought$WaterCondition <- factor(drought$WaterCondition, levels = c("Normal", "D
 ```
 
 The data is now imported, columns set as factors where appropriates, and the "reference" levels set with wild-type for Genotype, and Normal for WaterCondition.
+
+Next, to examine the data, we'll put the interaction between genotype and water condition on the x-axis, then do a dot plot as usual.
+
+```{R, out.width = "50%", echo=TRUE}
+drought$cond<-with(drought,interaction(WaterCondition, Genotype))
+ggplot(drought, aes(cond, Temperature,colour=plant))+geom_point()
+```
+
+As a demonstration that the proper inclusion of variance structure is vital to successful analysis, we'll do a standard linear model first:
+
+```{R, echo=TRUE}
+lm.drought<-lm(Temperature~Genotype*WaterCondition, data=drought)
+anova(lm.drought)
+```
+
+This shows a strong impact of Genotype, Water Condition and the two-way interaction. but it might not be correct.... Let's see what happens with a more appropriate mixed model including Plant as a blocking random factor:
+
+```{R, echo=TRUE}
+lmer.drought<-lmer(Temperature~Genotype*WaterCondition+(1|plant), data=drought)
+anova(lmer.drought)
+```
+
+So, what's happening? The clue is within `emmeans`:
+
+```{R, echo=TRUE}
+emmeans(lm.drought,~Genotype*WaterCondition)
+emmeans(lmer.drought,~Genotype*WaterCondition)
+```
+
+As the linear model knows nothing about the blocking factor, it assigns all 28 degrees of freedom to each factor. The mixed model however recognises this as erroneous, and correctly allocates just 4 df to each factor, resulting in much larger standard error estimates, and thus far less clarity on effect.

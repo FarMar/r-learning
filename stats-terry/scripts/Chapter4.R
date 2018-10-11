@@ -37,3 +37,11 @@ drought$plant<-factor(drought$plant)
 drought$Genotype <- factor(drought$Genotype, levels = c("WT", "mutant"))
 drought$WaterCondition <- factor(drought$WaterCondition, levels = c("Normal", "Drought"))
 
+drought$cond<-with(drought,interaction(WaterCondition, Genotype))
+ggplot(drought, aes(cond, Temperature,colour=plant))+geom_point()
+
+lm.drought<-lm(Temperature~Genotype*WaterCondition, data=drought)
+anova(lm.drought)
+
+lmer.drought<-lmer(Temperature~Genotype*WaterCondition+(1|plant), data=drought)
+anova(lmer.drought)
