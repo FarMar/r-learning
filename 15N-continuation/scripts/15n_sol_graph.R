@@ -33,12 +33,12 @@ ggplot(data = all, aes(days, no3, colour = trt)) + # x, y, colour by treatment
   #geom_point(size = 6, alpha = 0.6) + # Plot as a point graph, size, transparency
   geom_jitter(size = 4, alpha = 0.7, width = 0.5) + # Plot as a jittered point graph
   stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
-  stat_smooth(method = "loess", # Adds ribbon for SE / CI and allows transparency to be adjusted
+  #stat_smooth(method = "loess", # Adds ribbon for SE / CI and allows transparency to be adjusted
   #              colour = "red", 
-                geom = "ribbon", 
-                alpha = 0.05, #sets ribbon transparency
-                size = 0.0001, #sets ribbon outline thickness. Need to work out how to make transparent
-                fullrange = TRUE) + # Forces ribbon to end of data
+#                geom = "ribbon", 
+ #               alpha = 0.05, #sets ribbon transparency
+  #              size = 0.0001, #sets ribbon outline thickness. Need to work out how to make transparent
+   #             fullrange = TRUE) + # Forces ribbon to end of data
  # xlim(0, 48) + ylim(0, 300) + # can be used to set hard limits to scale
   coord_cartesian(xlim = c(0, 48), ylim = c(0, 450)) + #sets soft limits to scale
   labs(

@@ -1,0 +1,134 @@
+---
+title: "Impact of biostimulants on soil nitrogen dynamics"
+author: "Mark Farrell"
+date: "12/10/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Overview
+
+These data are from a pot experiment that was conducted to investigate whether biostimulants impact on soil nitrogen (N) cycling and wheat uptake of legume-derived N. Here, we are looking at soluble N and carbon (C) pools over the growth period. These are presented in mg L^-1^ as they are derived from soil solution samples that were collected non-destructively using [Rhizon samplers](https://www.rhizosphere.com/).
+![](https://www.rhizosphere.com/assets/images/RhizonCSSinacoreRRP.jpg)
+
+# Initial data processing, tidying, etc
+
+First, we need to load tidyverse and the analysis packages, and bring the data into the R environment
+```{r load_libraries, message=FALSE}
+library(tidyverse)
+library(lmerTest)
+library(emmeans)
+setwd("~/DATASCHOOL/r-learning/15N-continuation/")
+raw_data <- read_csv("data/working/15n_soil_sol.csv")
+
+```
+
+We can now see that the data has been successfully loaded into the environment:
+
+```{r raw}
+raw_data
+```
+
+There are now several steps that need to be taken before we can start graphing the data. Some variables need to be calculated:
+
+* DIN
+* DON
+* DOC_DON ratio
+* DON_DIN ratio
+
+## Making new variables
+
+Making a new variable is easy. As I forgot to give it a name, I also re-named is using the ```name``` function in base R
+
+```{r DIN, message=FALSE}
+with_din <- mutate(raw_data, nh4 + no3)
+names(with_din)[11] <- "din"
+```
+
+## Data cleaning
+As part of this there is some cleaning that also needs to happen. In calculating DON, we can use ```case_when()``` in the mutate function to identify values < 0 and make them 0:
+
+```{r mutations, message=FALSE}
+with_don <- with_din %>% 
+  mutate(don = tdn - din,
+         don_nz = case_when(
+           don >= 0 ~ don,
+           TRUE ~ 0
+         ))
+```
+
+```{r hidden 1, echo=FALSE, message=FALSE, results=FALSE}
+##do we have any negatives?
+count(with_don, don_nz < 0)
+
+##tidying...
+don_fixed <- select(with_don, -don)
+names(don_fixed)[12] <- "don"
+```
+
+Doing some more simple mutations calculates the ratios, but also generates ```Inf``` where a divide by zero has happened
+
+```{r ratios_calc}
+ratios <- mutate(don_fixed, doc_don = doc / don )
+ratios <- mutate(ratios, don_din = don / din )
+```
+
+```{r ratios, echo=FALSE}
+ratios
+```
+
+The ```case_when``` operation above won't work here straight away to turn ```Inf``` to ```'NA'```
+
+So, Alex provided a solution using <mutate> to change all infinate values to NA:
+```don_fixed$doc_don[which(is.infinite(don_fixed$doc_don))] <- NA
+```
+I also found one on [Stack Overflow](https://stackoverflow.com/questions/12188509/cleaning-inf-values-from-an-r-dataframe)
+
+```{r kill_inf, message=FALSE}
+is.na(ratios) <- do.call(cbind,lapply(ratios, is.infinite))
+```
+
+This searches the data frame, finds infinate values and replaces them with NA
+
+```{r, echo=FALSE}
+ratios
+```
+
+Finally, the finished dataframe is written to a new *.csv
+
+```write_csv(ratios, "data/processed/ratios.csv")```
+
+# Data exploration with `ggplot`
+
+```{r hidden , echo=FALSE, message=FALSE, results=FALSE}
+setwd("~/DATASCHOOL/r-learning/15N-continuation/")
+raw_data <- read_csv("data/working/ratios.csv")
+```
+
+Given we have time-series data, it seems most appropriate to explore the different variables with time in days as the x-axis.
+
+## Graphing concepts
+
+* You can include several objects with the aesthetic `aes()`. The format is x-axis, y-axis, ...
+    * Where ... can include colour, shape, size, etc
+* You can set colurs manually using `scale_colour_manual(values=c("#CCFF00"))` where colours are provided in hexadecimal code in the order in which the variable is set
+* `geom_point` or `geom_jitter` can be used for dot plots. The jitter option allows the points to be moved slightly in the x-axis to reduce over-plotting, which is what we've chosen here given the large number of data points
+* `stat_smooth` fits lines through the points. We've used loess here as an accepted way of interpolating between the points
+* `coords_cartesian` allows soft x and y limits
+* Given the awkwardness in coding special symbols, sub/super-script, brackets etc in axis lables, I found a solution using `bquote`. So, for more polished plots, rather than defining x and y within the `labs()` function, these are defined first as `xlab(bquote())`. `labs()` can then just be used for the title, legends, etc.
+* Theme is then used to tidy things up
+
+There's definitely lots more to this, and teh R graphics cookbook is a good start for different graph types. Needless to say, you can spend rather too long on your artwork at this stage, so something to keep an eye on!
+
+Simple graphs - NO3, NH4, DON, DOC
+Then scatter
+Then final
+
+Then split data
+
+Then LMERTEST etc
+
+Check alll works neatly, progress to plant data if time
