@@ -1,0 +1,65 @@
+---
+title: "Chapter 5"
+author: "Mark Farrell"
+date: "11/10/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+library("emmeans")
+library("lmerTest")
+```
+
+# Statistical modelling: Understanding Error (Variance) Structure II
+
+## Part 1 - Getting the error term correct: a case study 
+
+Main research questions: 
+
+* Does dark respiration vary within a leaf?
+* How does dark respiration vary by leaf age?  
+* Does dark respiration vary across species? 
+
+Measurements: 
+
+* 9 plants- 3 plants/species (3 species)
+* 3 leaf stages (ages): older - younger leaves
+* 5 leaf sections from base to tip
+* n = 9x3x5 = *135 observations*
+
+```{r, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry/")
+respire<-read_csv("data/working/Prac 4 dark respiration.csv")
+respire$Plant_ID<-factor(respire$Plant_ID)
+respire$Leaf_stage<-factor(respire$Leaf_stage)
+respire$Leaf_section<-factor(respire$Leaf_section)
+respire$Species<-factor(respire$Species, labels=c("PM","UP","ZM"))
+```
+
+All data imported, appropriate columns set as factors, Species factor re-ordered / ne-named. Now lets have a quick look at the data:
+
+```{R, echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(respire, aes(Species, Dry_mass_resp,colour=Leaf_section))+geom_boxplot()
+ggplot(respire, aes(Species, Dry_mass_resp,colour=Leaf_stage))+geom_boxplot()
+```
+
+There's an important structure to the variance of this data.
+
+1. We have the fully factorial `Species x Leaf Stage x Leaf section` portion of the model
+2. We then have the plant as a block `+(1|Plant_ID)`
+3. We then have leaf stage nested within plant block `+(1|Leaf_stage:Plant_ID)`
+
+```{R, echo=TRUE}
+model4<-lmer(Dry_mass_resp~Species*Leaf_stage*Leaf_section+(1|Plant_ID) + (1|Leaf_stage:Plant_ID),data=respire) 
+anova(model4)
+```
+
+We can conlude that only leaf section has a significant impact on respiration.
+
+```{R, out.width = "50%", echo=TRUE}
+plot(model4)
+```
+
+Fit is good too :)
