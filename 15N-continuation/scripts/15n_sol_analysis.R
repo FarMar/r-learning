@@ -2,6 +2,8 @@
 ## It examines the final processed data ../data/working/ratios.csv
 
 library(tidyverse)
+library(lmerTest)
+library(emmeans)
 setwd("~/DATASCHOOL/r-learning/15N-continuation/")
 all <- read_csv("data/working/ratios.csv")
 all
@@ -95,18 +97,65 @@ ggplot(data = no3fix, aes(days, tdn, colour = trt, size = percentno3f)) + # x, y
   stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
   coord_cartesian(xlim = c(0, 48), ylim = c(0, 520)) + #sets soft limits to scale
   xlab(bquote('Time ('*d*')')) +
-  ylab(bquote('TDN ('*'mg' ~L~ kg^-1*')')) +
+  ylab(bquote('TDN ('*'mg N'%.% L^-1*')')) +
   labs(
     title = "Total dissolved N in soil solution", # Graph title
     colour = "Treatment", # Legend Title
     size = "%" ~NO[3]^{textstyle("-")}
   ) +
   theme(
+    plot.title = element_text(size=22),
     panel.grid = element_blank(), # blank grid
-        axis.text=element_text(size=14), # axis text size
+    axis.text=element_text(size=14), # axis text size
     axis.title = element_text(color="black", face="bold", size=18), # axis label text size
     panel.background = element_rect(fill = "white", # panel background
                                     colour = "black") # panel outline
   )
 
-                 
+# Split the data 
+t14 <- filter(no3fix, days == 14)
+t48 <- filter(no3fix, days == 48)
+
+#Re-order so controls are first
+t14$trt <- factor(t14$trt, levels = c("L", "K", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"))
+t48$trt <- factor(t48$trt, levels = c("L", "K", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"))
+
+#Boxplots
+ggplot(data = t14, aes(trt, tdn, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                              
+  )) +
+  geom_boxplot()
+
+ggplot(data = t48, aes(trt, don_din, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                               
+  )) +
+  geom_boxplot()
+
+lmer_tdn14 = lmer(tdn~trt+(1|block), data = t14)
+anova(lmer_tdn14)
+emmeans(lmer_tdn14, pairwise~trt)
+
