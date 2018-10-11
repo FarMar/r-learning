@@ -60,10 +60,18 @@ This covered an introdution to experimental design
 ### Chapter 3
 This provides an introduction to mean variance and statistical modelling. Details are again in the appropriate Rmd file. 
 
-All went smoothly. One useful top picked up from [Stack Overflow](https://stackoverflow.com/questions/37115276/control-alignment-of-two-side-by-side-plots-in-knitr)  was how to get the two diagnostics plot on the same line using knitR:
+All went smoothly. One useful tip picked up from [Stack Overflow](https://stackoverflow.com/questions/37115276/control-alignment-of-two-side-by-side-plots-in-knitr)  was how to get the two diagnostics plot on the same line using knitR:
 
 ```
 {r,echo=TRUE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
 ```
 
 This can obviously be fiddled with to work for whatever. Not sure if it works for ggplot outputs though.... Perhaps something to read up further on if knitRing becomes a more serious exercise for me.
+
+### Chapter 4
+Now we're looking at more complex models that take into consideration blocking etc. `lmerTest` is used here to allow a mixed model to be chosen that includes block as a random factor, e.g.:
+
+```
+model2=lmer(PhotoRate~Temp+(1|Position), data=photosynthesis)
+anova(model2)
+```

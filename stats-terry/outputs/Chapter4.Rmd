@@ -1,0 +1,79 @@
+---
+title: "Chapter 4"
+author: "Mark Farrell"
+date: "11/10/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+library("emmeans")
+library("lmerTest")
+```
+
+# Part 1 - How to incorporate components of a statistical model into the model statement
+
+* Blocking factors can be a significant source of variation
+* Between-block variation can interfere with treatment comparison
+* Treatments comparison ---- within blocks
+* Separate out Between-block variation  within-block variation
+
+## Example 1: Is photosynthetic rate affected by temperature?
+
+```{r data_sort, echo=TRUE, results="hide"}
+setwd("~/DATASCHOOL/r-learning/stats-terry/")
+photosynthesis<-read_csv("data/working/Prac 4 photosynthesis.csv")
+photosynthesis$Position<-factor(photosynthesis$Position)
+photosynthesis$Temp<-factor(photosynthesis$Temp)
+```
+
+24 plants grown in 3 different parts of the greenhouse
+
+Outcome measure
+      Photosynthetic rate
+Experimental factors
+      Temperature (high/low)
+Blocking factors
+      Position (4)
+
+_2 parameter model (plus random effects)_
+
+```{R, out.width = "50%", echo=TRUE}
+ggplot(photosynthesis,aes(Temp,PhotoRate,colour=Position))+
+  geom_point()
+```
+
+To demonstrate the point, first looking at a "normal" model without the blocking factor, we see that temperature has no effect on photosynthetic rate, which doesn't really make a whole lot of sense.
+
+```{R, echo=TRUE}
+model1=lm(PhotoRate~Temp, data=photosynthesis)
+anova(model1)
+```
+
+So, by using `lmer` from `lmerTest`, we're able to bring in teh random factor of block withthe following argument `+(1|Position)` where `Position` represents the block in this case.
+
+```{R, echo=TRUE}
+model2=lmer(PhotoRate~Temp+(1|Position), data=photosynthesis)
+anova(model2)
+```
+
+We now have a significant impact of temperature on photosynthetic rate. exploring the contrasts between teh two models by examining the summaries,
+
+```{R, echo=TRUE}
+summary(model1)
+summary(model2)
+```
+
+it's clear how much teh standartd error around the temperature effect tightens up once the random effect of position is accounted for.
+
+```{R, echo=TRUE}
+emmeans(model2,~Temp)
+```
+
+Finally, assumption checking...
+
+
+```{R, out.width = "50%", echo=TRUE}
+plot(model2)
+```
