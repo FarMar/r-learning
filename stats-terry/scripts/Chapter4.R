@@ -5,6 +5,9 @@ library("emmeans")
 library("lmerTest")
 
 setwd("~/DATASCHOOL/r-learning/stats-terry/")
+
+# Example 1 - impact of temperature on photsynthesis
+
 photosynthesis<-read_csv("data/working/Prac 4 photosynthesis.csv")
 str(photosynthesis)
 photosynthesis$Position<-factor(photosynthesis$Position)
@@ -21,3 +24,16 @@ anova(model1)
 
 model2=lmer(PhotoRate~Temp+(1|Position), data=photosynthesis)
 anova(model2)
+summary(model2)
+emmeans(model2,~Temp)
+plot(model2)
+
+# Example 2 - Can a gene KO Arabidopsis modulate leaf temperature during drought?
+
+drought<-read_csv("data/working/Prac 4 drought data.csv")
+str(drought)
+drought$plant<-factor(drought$plant)
+
+drought$Genotype <- factor(drought$Genotype, levels = c("WT", "mutant"))
+drought$WaterCondition <- factor(drought$WaterCondition, levels = c("Normal", "Drought"))
+

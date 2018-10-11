@@ -77,3 +77,27 @@ Finally, assumption checking...
 ```{R, out.width = "50%", echo=TRUE}
 plot(model2)
 ```
+
+## Example 2 - Can a gene KO Arabidopsis modulate leaf temperature during drought?
+
+Outcome measure
+        Leaf temperature
+Experimental factors
+       Genotype (control/mutant) (2)
+        Watering conditions (2)
+Blocking factors
+        Plant (4)
+        
+_4 parameter model (plus random effects)_
+
+```{r data_sort, echo=TRUE, results="hide"}
+drought<-read_csv("data/working/Prac 4 drought data.csv")
+str(drought)
+
+drought$plant<-factor(drought$plant)
+
+drought$Genotype <- factor(drought$Genotype, levels = c("WT", "mutant"))
+drought$WaterCondition <- factor(drought$WaterCondition, levels = c("Normal", "Drought"))
+```
+
+The data is now imported, columns set as factors where appropriates, and the "reference" levels set with wild-type for Genotype, and Normal for WaterCondition.

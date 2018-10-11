@@ -18,7 +18,7 @@ Covered background to statistical modelling and pitfalls of poor design.
 
 Starts on t-tests then simple linear models for the wheat dataset from agridat. 
 
-A useful data-wringling trick is given here:
+A useful data-wrangling trick is given here:
 
 ```
 wheat$Variety <- relevel(wheat$Variety, ref = "Standard")
