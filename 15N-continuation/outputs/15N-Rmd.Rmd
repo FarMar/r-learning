@@ -2,17 +2,27 @@
 title: "Impact of biostimulants on soil nitrogen dynamics"
 author: "Mark Farrell"
 date: "12/10/2018"
-output: html_document
+output: pdf_document
 ---
 
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE)
 ```
 
 # Overview
 
 These data are from a pot experiment that was conducted to investigate whether biostimulants impact on soil nitrogen (N) cycling and wheat uptake of legume-derived N. Here, we are looking at soluble N and carbon (C) pools over the growth period. These are presented in mg L^-1^ as they are derived from soil solution samples that were collected non-destructively using [Rhizon samplers](https://www.rhizosphere.com/).
-![](https://www.rhizosphere.com/assets/images/RhizonCSSinacoreRRP.jpg)
+
+##### Code chunk to get web-based images into R markdown pdf output
+```{r, fig.align='center'}
+rhizon_url = 'https://www.rhizosphere.com/assets/images/RhizonCSSinacoreRRP.jpg'
+if (!file.exists(rhizon <- 'RhizonCSSinacoreRRP.jpg'))
+  download.file(rhizon_url, rhizon, mode = 'wb')
+knitr::include_graphics(if (identical(knitr:::pandoc_to(), 'html')) rhizon_url else rhizon)
+```
+
+---
 
 # Initial data processing, tidying, etc
 
@@ -123,9 +133,210 @@ Given we have time-series data, it seems most appropriate to explore the differe
 
 There's definitely lots more to this, and teh R graphics cookbook is a good start for different graph types. Needless to say, you can spend rather too long on your artwork at this stage, so something to keep an eye on!
 
-Simple graphs - NO3, NH4, DON, DOC
-Then scatter
-Then final
+## What are we looking for in the data?
+
+In a nutshell, we're particularly interested in how the variables measured co-vary over time as affected by treatment. But, as this has the potential to get very messy, we'll first produce some simpler figures that will help us pin-point some main themes.
+
+### Variation with time
+
+1. Nitrate concentrations:
+
+```{R, echo=FALSE, fig.align='center', out.width = "75%"}
+ggplot(data = ratios, aes(days, no3, colour = trt)) + # x, y, colour by treatment
+  scale_colour_manual(values=c("#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300",
+                               "#333333",
+                               "#0099FF"
+  )) +
+  geom_jitter(size = 4, alpha = 0.7, width = 0.5) + # Plot as a jittered point graph
+  stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
+  coord_cartesian(xlim = c(0, 48), ylim = c(0, 450)) + #sets soft limits to scale
+  labs(
+    x = "Time (days)", # x axis label
+    y = ~NO[3]^{textstyle("-")}-N ~mg~L^{-1}, #y axis label, note cpde and weblink above for special characters and script
+    colour = "Treatment" # Legend Title
+  ) +
+  theme(
+    panel.grid = element_blank(), # blank grid
+    axis.text=element_text(size=14), # axis text size
+    axis.title = element_text(color="black", face="bold", size=18), # axis label text size
+    panel.background = element_rect(fill = "white", # panel background
+                                    colour = "black") # panel outline
+  )
+
+```
+
+2. Ammonium concentrations:
+
+```{R, echo=FALSE, fig.align='center', out.width = "75%"}
+ggplot(data = ratios, aes(days, nh4, colour = trt)) + # x, y, colour by treatment
+  scale_colour_manual(values=c("#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300",
+                               "#333333",
+                               "#0099FF"
+  )) +
+  geom_jitter(size = 4, alpha = 0.7, width = 0.5) + # Plot as a jittered point graph
+  stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
+  labs(
+    x = "Time (days)", # x axis label
+    y = ~NH[4]^{textstyle("+")}-N ~mg~L^{-1}, #y axis label, note cpde and weblink above for special characters and script
+    colour = "Treatment" # Legend Title
+  ) +
+  theme(
+    panel.grid = element_blank(), # blank grid
+    axis.text=element_text(size=14), # axis text size
+    axis.title = element_text(color="black", face="bold", size=18), # axis label text size
+    panel.background = element_rect(fill = "white", # panel background
+                                    colour = "black") # panel outline
+  )
+
+```
+
+3. Dissolved organic nitrogen concentrations
+
+```{R, echo=FALSE, fig.align='center', out.width = "75%"}
+ggplot(data = ratios, aes(days, don, colour = trt)) + # x, y, colour by treatment
+  scale_colour_manual(values=c("#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300",
+                               "#333333",
+                               "#0099FF"
+  )) +
+  geom_jitter(size = 4, alpha = 0.7, width = 0.5) + # Plot as a jittered point graph
+  stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
+  labs(
+    x = "Time (days)", # x axis label
+    y = DON ~mg~L^{-1}, #y axis label, note cpde and weblink above for special characters and script
+    colour = "Treatment" # Legend Title
+  ) +
+  theme(
+    panel.grid = element_blank(), # blank grid
+    axis.text=element_text(size=14), # axis text size
+    axis.title = element_text(color="black", face="bold", size=18), # axis label text size
+    panel.background = element_rect(fill = "white", # panel background
+                                    colour = "black") # panel outline
+  )
+
+```
+
+4. Dissolved organic carbon - a potentially useful co-variate
+
+```{R, echo=FALSE, fig.align='center', out.width = "75%"}
+ggplot(data = ratios, aes(days, doc, colour = trt)) + # x, y, colour by treatment
+  scale_colour_manual(values=c("#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300",
+                               "#333333",
+                               "#0099FF"
+  )) +
+  geom_jitter(size = 4, alpha = 0.7, width = 0.5) + # Plot as a jittered point graph
+  stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
+  labs(
+    x = "Time (days)", # x axis label
+    y = DOC ~mg~L^{-1}, #y axis label, note cpde and weblink above for special characters and script
+    colour = "Treatment" # Legend Title
+  ) +
+  theme(
+    panel.grid = element_blank(), # blank grid
+    axis.text=element_text(size=14), # axis text size
+    axis.title = element_text(color="black", face="bold", size=18), # axis label text size
+    panel.background = element_rect(fill = "white", # panel background
+                                    colour = "black") # panel outline
+  )
+
+```
+
+These four figures show some interesting trends. Nitrate peaks at 14 days, whereas ca. 100-fold lower ammonium concentrations are at their highest upon commencement of the experiment, and are much lower for the zero control (treatment L). Dissolved organic nitrogen data is generally noiser, but the solid treatments (F-J, browns) seem to result in evelated DON concentrations again around d14. DOC becomes most elevated by treatment B at d48 (harvest).
+
+### Integration...
+
+Given the dominance of nitrate within the dissolved nitrogen pool, it perhaps makes sense to have this as a focus. However, as it's not the only form of avilable N measured, I have chosen to plot total dissolved N, with spot size representing the proportion of that N which is nitrate. This has required a couple more data processing steps:
+
+```{R, echo=TRUE}
+no3percent <- mutate(ratios, percentno3 = (100 / tdn) * no3 )
+no3fix <- mutate(no3percent, if_else(percentno3 >100, 100, percentno3))
+no3fix <- rename(no3fix, percentno3f = "if_else(percentno3 > 100, 100, percentno3)")
+no3fix
+```
+
+This has made a new variable `percentno3f` within a new tibble `no3fix`. It is from this that we can now construct the final time-based figure, before moving on to analysis of teh data at key time points. This time I've echoed the `ggplot` code so that we can see how it's constructed:
+
+```{R, echo=TRUE, fig.align='center',out.width = "90%"}
+ggplot(data = no3fix, aes(days, tdn, colour = trt, size = percentno3f)) + # x, y, colour by treatment
+  scale_colour_manual(values=c("#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300",
+                               "#333333",
+                               "#0099FF"
+  )) +
+  geom_jitter(alpha = 0.7, width = 0.5) + # Plot as a jittered point graph
+  stat_smooth(method = "loess", se = FALSE, size = 1) + # Adds trend line only
+  coord_cartesian(xlim = c(0, 48), ylim = c(0, 520)) + #sets soft limits to scale
+  xlab(bquote('Time ('*d*')')) +
+  ylab(bquote('TDN ('*'mg N'%.% L^-1*')')) +
+  labs(
+    title = "Total dissolved N in soil solution", # Graph title
+    colour = "Treatment", # Legend Title
+    size = "%" ~NO[3]^{textstyle("-")}
+  ) +
+  theme(
+    plot.title = element_text(size=22),
+    panel.grid = element_blank(), # blank grid
+    axis.text=element_text(size=14), # axis text size
+    axis.title = element_text(color="black", face="bold", size=18), # axis label text size
+    panel.background = element_rect(fill = "white", # panel background
+                                    colour = "black") # panel outline
+  )
+
+```
+
+This figure shows us a lot of useful information:
+
+* Dissolved N at the start of the pot experiment is typically dominated by non-nitrate forms
+* By the peak at day 14, the majority of dissolved N in all treatments takes the form of nitrate
+* This falls rapidly by day 36
+* There is an interesting up-tick in TDN in one of the liquid treatments by day 48 (harvest) that is not related to nitrate. Looking at the initial exploratory figures, it is apparent that this is dissolved organic N, reflective of an increase in dissolved organic C. The mechanisms for this are unknown, but appear to only be related to this one product
+
+---
+
+
 
 Then split data
 
