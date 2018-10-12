@@ -172,3 +172,8 @@ lmer_don48 = lmer(don~trt+(1|block), data = t48)
 anova(lmer_don48)
 emmeans(lmer_don48, pairwise~trt)
 plot(lmer_don48)
+
+lm_don48 = lm(don~trt, data = t48)
+anova(lm_don48)
+emmeans(lm_don48, pairwise~trt)
+plot(lm_don48, which = 1:2)
