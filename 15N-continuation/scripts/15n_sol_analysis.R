@@ -155,7 +155,20 @@ ggplot(data = t48, aes(trt, don_din, colour = trt)) +
   )) +
   geom_boxplot()
 
-lmer_tdn14 = lmer(tdn~trt+(1|block), data = t14)
-anova(lmer_tdn14)
-emmeans(lmer_tdn14, pairwise~trt)
+t14$block <- factor(t14$block)
+t48$block <- factor(t48$block)
 
+lmer_no314 = lmer(no3~trt+(1|block), data = t14)
+anova(lmer_no314)
+emmeans(lmer_no314, pairwise~trt)
+plot(lmer_no314)
+
+lmer_don14 = lmer(don~trt+(1|block), data = t14)
+anova(lmer_don14)
+emmeans(lmer_don14, pairwise~trt)
+plot(lmer_don14)
+
+lmer_don48 = lmer(don~trt+(1|block), data = t48)
+anova(lmer_don48)
+emmeans(lmer_don48, pairwise~trt)
+plot(lmer_don48)

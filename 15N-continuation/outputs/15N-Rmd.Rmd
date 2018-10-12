@@ -336,10 +336,230 @@ This figure shows us a lot of useful information:
 
 ---
 
+# Data analysis
 
+Though we have time here as a factor, an analysis which includes this is problematic and probably not all that helpful. we know the variables change over time - that's not the question we're actually interested in. What _is_ interesting however, is whether the treatments have had any effect on nitrogen availability at key points, namely:
 
-Then split data
+* Day 14, at peak N availability
+* Day 48, when the wheat was harvested as the first plants had reached anthesis
 
-Then LMERTEST etc
+At this stage, I've re-ordered the treatments so that L and K come first as they are the controls and thus this makes inference easier
 
-Check alll works neatly, progress to plant data if time
+```{r}
+# Split the data 
+t14 <- filter(no3fix, days == 14)
+t48 <- filter(no3fix, days == 48)
+
+#Re-order so controls are first
+t14$trt <- factor(t14$trt, levels = c("L", "K", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"))
+t48$trt <- factor(t48$trt, levels = c("L", "K", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"))
+
+#Ensure block is a factor
+t14$block <- factor(t14$block)
+t48$block <- factor(t48$block)
+t14
+t48
+```
+
+Now we have two tibbles in the correct format, we can do a couple of point plots to check on how things look 
+
+```{R, echo=FALSE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(data = t14, aes(trt, tdn, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                              
+  )) +
+  geom_point()
+
+ggplot(data = t48, aes(trt, tdn, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                               
+  )) +
+  geom_point()
+```
+
+```{R, echo=FALSE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(data = t14, aes(trt, no3, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                              
+  )) +
+  geom_point()
+
+ggplot(data = t48, aes(trt, no3, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                               
+  )) +
+  geom_point()
+```
+
+```{R, echo=FALSE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(data = t14, aes(trt, nh4, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                              
+  )) +
+  geom_point()
+
+ggplot(data = t48, aes(trt, nh4, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                               
+  )) +
+  geom_point()
+```
+
+```{R, echo=FALSE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(data = t14, aes(trt, faa, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                              
+  )) +
+  geom_point()
+
+ggplot(data = t48, aes(trt, faa, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                               
+  )) +
+  geom_point()
+```
+
+```{R, echo=FALSE, out.width='.49\\linewidth', fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+ggplot(data = t14, aes(trt, don, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                              
+  )) +
+  geom_point()
+
+ggplot(data = t48, aes(trt, don, colour = trt)) +
+  scale_colour_manual(values=c("#0099FF",
+                               "#333333",
+                               "#CCFF00", # all the colours in hexadecimal code in order of "colour = x" argument above
+                               "#99FF00",
+                               "#66FF00",
+                               "#00CC00",
+                               "#336600",
+                               "#FFCC33",
+                               "#FF9933",
+                               "#CC9933",
+                               "#996600",
+                               "#993300"
+                               
+  )) +
+  geom_point()
+```
+
+From the above dot plots, it's apparent that nitrate at d48, ammonium at both time points, and amino acids at both points are low enough to be insignificant or bordering limit of quantification issues. Thus, we'll focus our testing on nitrate at day 14, and DON at days 14 and 48. We have six blocks, which will be included as a random factor in the analysis.
+
+```{r}
+lmer_no314 = lmer(no3~trt+(1|block), data = t14)
+anova(lmer_no314)
+emmeans(lmer_no314, pairwise~trt)
+
+lmer_don14 = lmer(don~trt+(1|block), data = t14)
+anova(lmer_don14)
+
+lmer_don48 = lmer(don~trt+(1|block), data = t48)
+anova(lmer_don48)
+emmeans(lmer_don48, pairwise~trt)
+```
+
+```{R, echo=FALSE, out.width='.49\\linewidth', fig.width=2, fig.height=2,fig.show='hold',fig.align='center'}
+plot(lmer_no314)
+plot(lmer_don14)
+plot(lmer_don48)
+```
