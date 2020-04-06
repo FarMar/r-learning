@@ -103,3 +103,16 @@ levels(trees.genus.2$Height.cat)
 ## Advanced piping
 # Here we're going to draw a map of the trees. First, the data needs to be simplified:
 
+trees.five <- trees.genus.2 %>% 
+  filter(Genus %in% c("Acer", "Fraxinus", "Salix", "Aesculus", "Pinus"))
+
+# we're then going to draw a very simple map in ggplot
+# x/y are lat/long, size = height category, genus = colour
+
+(map.all <- ggplot(trees.five) +
+    geom_point(aes(x = Easting, y = Northing, size = Height.cat, colour = Genus), alpha = 0.5) +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          axis.text = element_text(size = 12),
+          legend.text = element_text(size = 12))
+  )
