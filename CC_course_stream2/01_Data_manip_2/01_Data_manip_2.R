@@ -99,3 +99,7 @@ trees.genus.2$Height.cat <- factor(trees.genus.2$Height.cat,
                                    labels = c("SHORT", "MEDIUM", "TALL")
                                    )
 levels(trees.genus.2$Height.cat)
+
+## Advanced piping
+# Here we're going to draw a map of the trees. First, the data needs to be simplified:
+
