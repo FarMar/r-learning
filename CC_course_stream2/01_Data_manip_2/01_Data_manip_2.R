@@ -116,3 +116,31 @@ trees.five <- trees.genus.2 %>%
           axis.text = element_text(size = 12),
           legend.text = element_text(size = 12))
   )
+
+## Now we're going to use dplyr to pull out each genus of the five "chosen ones" and then generate individual plots
+## Could do this with facets, but this option is more flexible if happy patching up figures in Illustrator later
+## `do()` is the function to explore here
+
+tree.plots <-
+  trees.five %>%        # the data frame
+  group_by(Genus) %>%   # grouping by genus
+  do(plots =            # the plotting call within the `do()` function
+      ggplot(data = .) +
+       geom_point(aes(x = Easting, y = Northing, size = Height.cat), alpha = 0.5) +
+       labs(title = paste("Map of", .$Genus, "at Craigmillar Castle", sep = " ")) + # title autofil magic from the . 
+       theme_bw() +
+       theme(panel.grid = element_blank(),
+             axis.text = element_text(size = 14),
+             legend.text = element_text(size = 12),
+             plot.title = element_text(hjust = 0.5),
+             legend.position = "bottom")
+     )
+
+# view the plots in viewer
+tree.plots$plots
+
+# save the autonamed plots to an autonamed directory
+tree.plots %>% 
+  do(.,
+     ggsave(.$plots, filename = paste(getwd(), "/", "map-", .$Genus, ".png", sep = ""), 
+            device = "png", height = 12, width =16, units = "cm"))
