@@ -144,3 +144,42 @@ tree.plots %>%
   do(.,
      ggsave(.$plots, filename = paste(getwd(), "/", "map-", .$Genus, ".png", sep = ""), 
             device = "png", height = 12, width =16, units = "cm"))
+
+### We would like a summary of the species in each of four quadrants of the park (NE, NW, SE, SW)
+### Outputs required for each quadrant are: species richness, abundance of Acer, bar plots of Acer trees
+
+## Calculate the quadrants
+# Find the center coordinates that will divide the data 
+# (adding half of the range in longitude and latitude to the smallest value)
+
+lon <- (max(trees.genus.2$Easting) - min(trees.genus.2$Easting))/2 + min(trees.genus.2$Easting)
+lat <- (max(trees.genus.2$Northing) - min(trees.genus.2$Northing))/2 + min(trees.genus.2$Northing)
+
+# Then create the Quadrant column
+
+trees.genus.2 <- trees.genus.2 %>% 
+  mutate(Quadrant = case_when(
+    Easting < lon & Northing > lat ~ 'NW',
+    Easting < lon & Northing < lat ~ 'SW',
+    Easting > lon & Northing > lat ~ 'NE',
+    Easting > lon & Northing < lat ~ 'SE')
+  )
+
+# Check if it worked
+ggplot(trees.genus.2) +
+  geom_point(aes(x = Easting, y = Northing, colour = Quadrant)) +
+  theme_bw()
+
+# Note the NA, indicating that a point wasn't binned to a quadrant correctly. This is likely because the lat/lon
+# splits found at least one point that fell in neither due to it being exactly on the boundary. 
+# A trap for new players.
+# Fix is simple enough - use <= and decide where you want points that fall on the cracks to end up
+# This would be a very similar situation to the 0-10 cm, 10-20 cm problem of soil cores...
+
+trees.genus.2 <- trees.genus.2 %>% 
+  mutate(Quadrant = case_when(
+    Easting <= lon & Northing > lat ~ 'NW',
+    Easting <= lon & Northing < lat ~ 'SW',
+    Easting > lon & Northing > lat ~ 'NE',
+    Easting > lon & Northing < lat ~ 'SE')
+  )
