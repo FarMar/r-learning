@@ -211,4 +211,35 @@ ggplot(acer.percent) +
   theme_bw()
 
 ## Finally, bar plots of age distribution of Acers in each quadrant
+# Create an Acer-only dataframe
 
+acer <- trees.genus.2 %>% 
+  filter(Genus == 'Acer')
+
+# Rename and reorder age factor
+
+acer$AgeGroup <- factor(acer$AgeGroup,
+                        levels = c('Juvenile', 'Semi-mature', 'Middle Aged', 'Mature'),
+                        labels = c('Young', 'Young', 'Middle Aged', 'Mature'))
+
+# Plot the graphs.... magic `do()` in here 
+acer.plots <- acer %>% 
+  group_by(Quadrant) %>% 
+  do(plots = 
+       ggplot(data = .) +
+       geom_bar(aes(x = AgeGroup)) +
+       labs(title = paste('Age distribution of Acer in ', .$Quadrant, ' corner', sep = ''),
+            x = 'Age Group', y = 'Number of trees') +
+       theme_bw() +
+       theme(panel.grid = element_blank(),
+             axis.title = element_text(size = 14),
+             axis.text = element_text(size = 14),
+             plot.title = element_text(hjust = 0.5))
+     )
+
+acer.plots$plots  
+  
+  
+  
+  
+  
