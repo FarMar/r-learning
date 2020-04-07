@@ -183,3 +183,32 @@ trees.genus.2 <- trees.genus.2 %>%
     Easting > lon & Northing > lat ~ 'NE',
     Easting > lon & Northing < lat ~ 'SE')
   )
+
+## Species richness by quadrant
+# Reads in data, groups by Quadrant, uses `summarise` to make new tibble with headings Quadrant and richness
+# and displays number of unique species in each quadrant. NB "richness" in final line could be any name you 
+# wanted to be header for the column in the new tibble
+
+sp.richness <- trees.genus.2 %>% 
+   group_by(Quadrant) %>% 
+   summarise(richness = length(unique(LatinName)))
+sp.richness
+
+## Now to calculate the proportion of Acer trees
+
+acer.percent <- trees.genus.2 %>% 
+  group_by(Quadrant, Genus) %>%     # comma lets you have sub-group, in this case Quadrant x Genus
+  tally() %>%                       # counts the number in each subgroup
+  group_by(Quadrant) %>%            # re-groups just by quadrant
+  mutate(total = sum(n)) %>%        # sums the number of trees into a new column
+  filter(Genus == 'Acer') %>%       # filters by genus, to keep only Acer. Note `==` is a strict match
+  mutate(percent = n/total)         # calculates the proportion
+
+# Draw the figure
+ggplot(acer.percent) +
+  geom_col(aes(x = Quadrant, y = percent)) +
+  labs(x = 'Quadrant', y = 'Proportion of Acer') +
+  theme_bw()
+
+## Finally, bar plots of age distribution of Acers in each quadrant
+
