@@ -42,3 +42,7 @@ str(LPI2)
 
 # Abundance is still a character, let's fix that
 LPI2$abundance <- as.numeric(LPI2$abundance)
+str(LPI2)
+
+# Given the size of the dataset, we're first going to identify a species to subset to and play with.
+unique(LPI2$Common.Name) #lists all individual unique names, though console gets bored after 1000
