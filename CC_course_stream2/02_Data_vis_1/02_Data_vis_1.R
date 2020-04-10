@@ -46,3 +46,35 @@ str(LPI2)
 
 # Given the size of the dataset, we're first going to identify a species to subset to and play with.
 unique(LPI2$Common.Name) #lists all individual unique names, though console gets bored after 1000
+
+# We'll stick with the example in the exercise and go with vultures
+vulture <- filter(LPI2, Common.Name == "Griffon vulture / Eurasian griffon")
+head(vulture)
+vulture <- na.omit(vulture) #cull the NAs
+
+
+####################################################################################################################
+
+### Graphics time
+
+## Base
+base_hist <- hist(vulture$abundance)
+
+## ggplot
+vulture_hist <- ggplot(vulture, aes(x = abundance)) +
+  geom_histogram()
+vulture_hist
+
+## gg better
+(vulture_hist <- ggplot(vulture, aes(x = abundance)) +
+    geom_histogram(binwidth = 250, colour = "orange", fill = "yellow") +
+    geom_vline(aes(xintercept = mean(abundance)),
+               colour = "red", linetype = "dashed", size = 1) +
+    theme_bw() +
+    ylab("Count\n") + # `\n` adds a line below the label to give more space
+    xlab("\nGriffon vulture abundance") +
+    theme(axis.text = element_text(size = 12),
+          axis.title.x = element_text(size = 14, face = "plain"), # face="plain" is the default, you can change it to italic, bold, etc.
+          panel.grid = element_blank(),
+          plot.margin = unit(c(1,1,1,1), units = , "cm"))  # Putting a 1 cm margin around the plot
+    )
