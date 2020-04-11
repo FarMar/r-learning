@@ -67,7 +67,7 @@ vulture_hist
 
 ## gg better
 (vulture_hist <- ggplot(vulture, aes(x = abundance)) +
-    geom_histogram(binwidth = 250, colour = "orange", fill = "yellow") +
+    geom_histogram(binwidth = 250, colour = "brown", fill = "orange") +
     geom_vline(aes(xintercept = mean(abundance)),
                colour = "red", linetype = "dashed", size = 1) +
     theme_bw() +
@@ -78,3 +78,26 @@ vulture_hist
           panel.grid = element_blank(),
           plot.margin = unit(c(1,1,1,1), units = , "cm"))  # Putting a 1 cm margin around the plot
     )
+
+## Scatter plot to show how aundance changes in Italy and Croatia over time
+
+vultureITCR <- filter(vulture, Country.list %in% c("Croatia", "Italy"))
+plot(vultureITCR$year, vultureITCR$abundance, col=c("red", "green"))
+(vulture_scatter <- ggplot(vultureITCR, aes(x = year, y = abundance, colour = Country.list)) +
+                             geom_point(size = 2) +
+    geom_smooth(method = "lm", aes(fill = Country.list)) +
+    theme_bw() +
+    scale_fill_manual(values = c("#EE7600", "#00868B")) +
+    scale_colour_manual(values = c("#EE7600", "#00868B"),
+                        labels = c("Croatia", "Italy")) +
+    ylab("Griffon vulture abundance\n") +
+    xlab("\nYear") +
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),
+          axis.text.y = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "plain"),
+          panel.grid = element_blank(),
+          plot.margin = unit(c(1,1,1,1), units = , "cm"),
+          legend.text = element_text(size = 12, face = "italic"),
+          legend.title = element_blank(),
+          legend.position = c(0.9, 0.9))
+  )
