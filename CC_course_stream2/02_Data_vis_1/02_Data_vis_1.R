@@ -124,6 +124,22 @@ plot(vultureITCR$year, vultureITCR$abundance, col=c("red", "green"))
           legend.position = "none")
     )
 
+## Bar plot to examine several countries. NB we don't like barplots, but this is appropriate as we're presenting
+## calculated species richness data
+
+# This chunk takes the LPI2 data, selects five countries, and eventually adds a column based upon how many unique 
+# names (species in this case) are present in each country. It has however retained all the other info into the 
+# new tibble
+
+richness <- LPI2 %>% filter(Country.list %in% c("United Kingdom", "Germany", "France", "Netherlands", "Italy")) %>% 
+  group_by(Country.list) %>% 
+  mutate(richness = length(unique(Common.Name)))
+
+(richness_barplot <- ggplot(richness, aes(Country.list, richness)) +
+    geom_bar(position = position_dodge(), stat = "identity", colour = "black", fill = "#00868B")
+  )
+
+
 
 
 
