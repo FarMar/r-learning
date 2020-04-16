@@ -79,7 +79,7 @@ vulture_hist
           plot.margin = unit(c(1,1,1,1), units = , "cm"))  # Putting a 1 cm margin around the plot
     )
 
-## Scatter plot to show how aundance changes in Italy and Croatia over time
+## Scatter plot to show how abundance changes in Italy and Croatia over time
 
 vultureITCR <- filter(vulture, Country.list %in% c("Croatia", "Italy"))
 plot(vultureITCR$year, vultureITCR$abundance, col=c("red", "green"))
@@ -101,3 +101,35 @@ plot(vultureITCR$year, vultureITCR$abundance, col=c("red", "green"))
           legend.title = element_blank(),
           legend.position = c(0.9, 0.9))
   )
+
+## Boxplot to examine differences in abundance between the two countries
+
+(vulture_boxplot <- ggplot(vultureITCR, aes(Country.list, abundance))
+  + geom_boxplot()
+  )
+
+# Pretty...
+
+(vulture_boxplot <- ggplot(vultureITCR, aes(Country.list, abundance)) +
+    geom_boxplot(aes(fill = Country.list)) +
+    theme_bw() +
+    scale_fill_manual(values = c("#EE7600", "#00868B")) +
+    scale_colour_manual(values = c("#EE7600", "#00868B")) +
+    ylab("Griffon vulture abundance\n") +
+    xlab("\nCountry") +
+    theme(axis.text = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "plain"),                     
+          panel.grid = element_blank(),                                               
+          plot.margin = unit(c(1,1,1,1), units = , "cm"),               
+          legend.position = "none")
+    )
+
+
+
+
+
+
+
+
+
+
