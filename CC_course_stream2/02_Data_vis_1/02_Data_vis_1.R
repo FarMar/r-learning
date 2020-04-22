@@ -184,6 +184,34 @@ richness <- LPI2 %>% filter(Country.list %in% c("United Kingdom", "Germany", "Fr
 # because of the wide range of abundance values in the data. 
 # You can use “fixed” when you want to constrain all axis values.
 
+## Not quite facets, but graphs from different analyses can be arranged for a single figure
+## using `grid.arrange()` from the package gridExtra.
+
+grid.arrange(vulture_hist, vulture_scatter, vulture_boxplot, ncol = 1)
+
+# clearly it's not quite so simple
+# adding ylab etc. again overrides the parameters of the original figures
+
+(panel <- grid.arrange(
+  vulture_hist + ggtitle("(a)") + ylab("Count") + xlab("Abundance") +
+    theme(plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), units = , "cm")),
+          vulture_boxplot + ggtitle("(b)") + ylab("Abundance") + xlab("Country") +
+            theme(plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), units = , "cm")),
+                  vulture_scatter + ggtitle("(c)") + ylab("Abundance") + xlab("Year") +
+                    theme(plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), units = , "cm")) +
+    theme(legend.text = element_text(size = 12, face = "italic"),
+    legend.title = element_blank(),
+    legend.position = c(0.85, 0.85)),
+#  widths = c(1, 1, 1), # can only use when ncol =/= 1
+  heights = c(1, 1, 2),
+  ncol = 1
+))
+
+# Still not quite right in the renderer, but can be fixed for export easily enough
+# using `ggsave`. Units are in inches by default, but can change by adding `units = "px"`
+# or `units = "cm"` at the end:
+
+ggsave(panel, file = "vulture_panel2.png", width = 5, height = 12)
 
 
 
