@@ -139,11 +139,50 @@ richness <- LPI2 %>% filter(Country.list %in% c("United Kingdom", "Germany", "Fr
     geom_bar(position = position_dodge(), stat = "identity", colour = "black", fill = "#00868B")
   )
 
+### Facet time
 
+## First to show what a mess when not splitting between panels
 
+(vulture_scatter_all <- ggplot(vulture, aes(x = year, y = abundance, colour = Country.list)) +
+    geom_point(size = 2) +
+    geom_smooth(method = "lm", aes(fill = Country.list)) +
+    theme_bw() +
+    ylab("Griffon vulture abundance\n") +
+    xlab("\nYear") +
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),     # making the years at a bit of an angle
+          axis.text.y = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "plain"),                        
+          panel.grid = element_blank(),                                   # Removing the background grid lines               
+          plot.margin = unit(c(1,1,1,1), units = , "cm"),                 # Adding a 1 cm margin around the plot
+          legend.text = element_text(size = 12, face = "italic"),         # Setting the font for the legend text
+          legend.title = element_blank(),                                 # Removing the legend title
+          legend.position = "right")
+  ) 
 
+## With facets
 
+(vulture_scatter_facet <- ggplot(vulture, aes(x = year, y = abundance, colour = Country.list)) +
+    geom_point(size = 2) +
+    geom_smooth(method = "lm", aes(fill = Country.list)) +
+    facet_wrap(~ Country.list, scales = "free_y") +
+    theme_bw() +
+    ylab("Griffon vulture abundance\n") +
+    xlab("\nYear") +
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),     # making the years at a bit of an angle
+          axis.text.y = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "plain"),                        
+          panel.grid = element_blank(),                                   # Removing the background grid lines               
+          plot.margin = unit(c(1,1,1,1), units = , "cm"),                 # Adding a 1 cm margin around the plot
+          legend.text = element_text(size = 12, face = "italic"),         # Setting the font for the legend text
+          legend.title = element_blank(),                                 # Removing the legend title
+          legend.position = "right")
+) 
 
+# Some useful arguments to include in facet_wrap()are nrow = or 
+# ncol = , specifying the number of rows or columns, respectively. 
+# You can also see that we used scales = "free_y", to allow different y axis values 
+# because of the wide range of abundance values in the data. 
+# You can use “fixed” when you want to constrain all axis values.
 
 
 
