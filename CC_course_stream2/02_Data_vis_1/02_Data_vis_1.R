@@ -213,6 +213,20 @@ grid.arrange(vulture_hist, vulture_scatter, vulture_boxplot, ncol = 1)
 
 ggsave(panel, file = "vulture_panel2.png", width = 5, height = 12)
 
+#### The Challenge
+### 1) Choose TWO species from the LPI data and display their population trends over time, 
+###    using a scatterplot and a linear model fit?
+###
+### 2) Using the same two species, filter the data to include only records from FIVE 
+###    countries of your choice, and make a boxplot to compare how the abundance of those 
+###    two species varies between the five countries?
 
+
+## Challenge 1
+# Pick two most abundant species
+
+top2 <- LPI2 %>% group_by(Common.Name) %>% 
+                            summarise(abundance = sum(abundance, na.rm = TRUE)) %>% 
+  top_n(2)
 
 
