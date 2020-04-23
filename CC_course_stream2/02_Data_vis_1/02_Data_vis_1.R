@@ -232,9 +232,10 @@ top2 <- LPI2 %>% group_by(Common.Name) %>%
 # 	"Pacific sardine / South American pilchard" and "Pacific sardine / South American pilchard"
 
 (messyplot1 <- filter(LPI2, Common.Name == top2$Common.Name) %>% 
-    ggplot(aes(year, log(abundance), colour = Common.Name, shape = Country.list)) +
+    ggplot(aes(year, log(abundance), colour = Country.list)) +
+    facet_wrap(~ Common.Name, scales = 'free_y') + 
     geom_point(size = 2) +
-    geom_smooth(method = "lm", aes(fill = Common.Name)) +
+    geom_smooth(method = "lm", aes(fill = Country.list)) +
     theme_bw() +
     ylab("Log Abundance\n") +
     xlab("\nYear") +
@@ -248,5 +249,27 @@ top2 <- LPI2 %>% group_by(Common.Name) %>%
           legend.position = "right")
 ) 
 
-# NB shapes without specifying only caters for six values. Here there are 7  
+# NB shapes without specifying only caters for six values. Here there are 7
+
+## Challenge 2
+# Boxplot for these two species for five countries (US, Canada, SA, Namibia, Chile)
+
+(messyplot2 <- filter(LPI2, Common.Name == top2$Common.Name) %>% 
+    filter(Country.list %in% c("United States", "Canada", "Chile", "Namibia", "South Africa" )) %>% 
+    group_by(Country.list) %>% 
+    ggplot(aes(Country.list, log(abundance+1))) +
+    facet_wrap(~ Common.Name, scales = 'free_y') + 
+    geom_boxplot()  +
+    theme_bw() +
+    ylab("Log Abundance\n") +
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),
+          axis.title.x = element_blank(),
+          axis.text.y = element_text(size = 12),
+          axis.title = element_text(size = 14, face = "plain"),                        
+          panel.grid = element_blank(),                                                  
+          plot.margin = unit(c(1,1,1,1), units = , "cm"),                
+          legend.text = element_text(size = 12, face = "italic"),         
+          legend.title = element_blank(),                                 
+          legend.position = "right")
+  )
 
