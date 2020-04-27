@@ -167,3 +167,74 @@ species_counts <- magic_veg %>%
           legend.position = "bottom", 
           legend.box.background = element_rect(color = "grey", size = 0.3))
 )
+
+ggsave( "images/magical-sp-rich-hist.png", plot = hist_side2, width = 7, height = 5, dpi = 300)
+
+
+#### COLOUR PALETTES
+# A more advanced use of colour palettes is to create one linked to your factor levels. This is great when you 
+# work on a project that will have multiple figures, and you want the colour-coding to be consistent across the 
+# board. Linking colours specifically to factor levels ensures that if a factor is dropped from a data frame, 
+# the corresponding colour will be dropped from the resulting plot, too, instead of being reassigned to the next 
+# available factor level.
+
+# Here with only two magical lands, you could easily keep track of the colours, but imagine if you had 10 different 
+# lands! Let’s create a fake dataframe of values for more magical lands, and see the power of this approach.
+
+# I suspect this will be the starting point for many a script dealing with categoricals...
+# For continuous we know about `scale_colour_gradient()`...
+
+## Make some more magical lands by forming two vectors. NB must be in order if doing this for real
+land <- factor(c("Narnia", "Hogsmeade", "Westeros", "The Shire", "Mordor", "Forbidden Forest", "Oz"))
+counts <- as.numeric(c(55, 48, 37, 62, 11, 39, 51))
+
+## Grab the vectors into a dataframe
+more_magic <- data.frame(land, counts)
+
+## Check how many factors there are - we'll need as many colours as factors
+length(levels(more_magic$land))
+# That'll be 7!
+
+## CREATE THE COLOUR PALETTE
+
+magic.palette <- c("#698B69", "#5D478B", "#5C5C5C", "#CD6090", "#EEC900", "#5F9EA0", "#6CA6CD") #Defining colours
+names(magic.palette) <- levels(more_magic$land) #linking factor names to colours - must be in correct order
+
+## Draw a bar chart
+(hist <- ggplot(more_magic, aes(x = land, y = counts, fill = land)) +
+    geom_histogram(stat = "identity", position = "dodge") + 
+    scale_y_continuous(limits = c(0, 65)) +
+    scale_fill_manual(values = magic.palette,                        # using our palette here
+                      name = "Land of Magic") +                      # Title of legend
+    labs(title = "Species richness in magical lands", 
+         x = "", y = "Number of species \n") + 
+    theme_bw() +
+    theme(panel.grid = element_blank(), 
+          axis.text = element_text(size = 12), 
+          axis.text.x = element_text(angle = 45, hjust = 1), 
+          axis.title = element_text(size = 12), 
+          plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+          plot.margin = unit(c(0.5,0.5,0.5,0.5), units = , "cm"), 
+          legend.title = element_text(face = "bold"),
+          legend.position = "bottom", 
+          legend.box.background = element_rect(color = "grey", size = 0.3)))
+
+## Drop some factors using %in% (neat trick!!) to show consistency of colours
+(hist <- ggplot(filter(more_magic, land %in% c("Hogsmeade", "Oz", "The Shire")), 
+                aes(x = land, y = counts, fill = land)) +
+    geom_histogram(stat = "identity", position = "dodge") + 
+    scale_y_continuous(limits = c(0, 65)) +
+    scale_fill_manual(values = magic.palette,  # using our palette ensures that colours with no corresponding factors are dropped
+                      name = "Land of Magic") +                
+    labs(title = "Species richness in magical lands", 
+         x = "", y = "Number of species \n") + 
+    theme_bw() +
+    theme(panel.grid = element_blank(), 
+          axis.text = element_text(size = 12), 
+          axis.text.x = element_text(angle = 45, hjust = 1), 
+          axis.title = element_text(size = 12), 
+          plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+          plot.margin = unit(c(0.5,0.5,0.5,0.5), units = , "cm"), 
+          legend.title = element_text(face = "bold"),
+          legend.position = "bottom", 
+          legend.box.background = element_rect(color = "grey", size = 0.3)))
