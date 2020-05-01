@@ -241,9 +241,38 @@ names(magic.palette) <- levels(more_magic$land) #linking factor names to colours
 
 ### Boxplot time
 # To make the boxplots, we will slightly reshape the dataset to take account of year as well.
-
-yearly_counts <- magic_veg %>% 
+# 
+yearly_counts <- magic_veg  %>% # brings in the data
   group_by(land, plot, year) %>%  # year is added here to create the third factor to group by in the plot
-  summarise(Species_number = length(unique(species))) %>% 
-  ungroup() %>% 
-  mutate(plot = as.factor(plot))
+  summarise(Species_number = length(unique(species))) %>% # creates `Species_number` column on the basis of the three factors
+  ungroup() %>% # drops thr grouping 
+  mutate(plot = as.factor(plot)) # converts `plot` into a factor for the boxplots
+
+(boxplot <-ggplot(yearly_counts, aes(plot, Species_number, fill = land)) +
+    geom_boxplot()
+  )
+
+
+# Pretty
+(boxplot <- ggplot(yearly_counts, aes(x = plot, y = Species_number, fill = land)) +
+    geom_boxplot() +
+    scale_x_discrete(breaks = 1:6) + # Limits numbers/ticks shown on the axis, can be concatenated combinations
+    scale_fill_manual(values = c("rosybrown1", "#deebf7"),
+                      breaks = c("Hogsmeade","Narnia"),
+                      name="Land of magic",
+                      labels=c("Hogsmeade", "Narnia")) +
+    labs(title = "Species richness by plot", 
+         x = "\n Plot number", y = "Number of species \n") + 
+    theme_bw() + 
+    theme() + 
+    theme(panel.grid = element_blank(), 
+          axis.text = element_text(size = 12), 
+          axis.title = element_text(size = 12), 
+          plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+          plot.margin = unit(c(0.5,0.5,0.5,0.5), units = , "cm"), 
+          legend.position = "bottom", 
+          legend.box.background = element_rect(color = "grey", size = 0.3)))
+
+
+
+
