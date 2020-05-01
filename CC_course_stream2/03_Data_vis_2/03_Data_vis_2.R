@@ -238,3 +238,12 @@ names(magic.palette) <- levels(more_magic$land) #linking factor names to colours
           legend.title = element_text(face = "bold"),
           legend.position = "bottom", 
           legend.box.background = element_rect(color = "grey", size = 0.3)))
+
+### Boxplot time
+# To make the boxplots, we will slightly reshape the dataset to take account of year as well.
+
+yearly_counts <- magic_veg %>% 
+  group_by(land, plot, year) %>%  # year is added here to create the third factor to group by in the plot
+  summarise(Species_number = length(unique(species))) %>% 
+  ungroup() %>% 
+  mutate(plot = as.factor(plot))
