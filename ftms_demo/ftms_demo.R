@@ -147,6 +147,37 @@ densityPlot(one_sample, variable = "kmass.CH2",
             plot_hist = TRUE, plot_curve = FALSE, yaxis = "count")
 
 ## Comparison of experimental groups
+#The goal of this experiment was to identify differences in soil organic matter between sample locations 
+# and crop types. In order to do that we need to compare experimental treatments (groups).
+# The `group_designation`` method defines treatment groups based on the variable(s) specified as main effects. 
+# Here we define groups based on the crop/flora type.
+
+peakObj <- group_designation(peakObj, main_effects = c("Crop.Flora"))
+getGroupDF(peakObj)
+
+# The summarizeGroups function calculates group-level summaries per peak, such as the number or proportion 
+# of samples in which peak is observed. The resulting object’s e_data element contains one column per group, 
+# per summary function.
+
+# ****WARNING - IT APPEARS THAT `summarizeGroups` RELIES ON A DEPRICATED PACKAGE `datadr`
+
+group_summary <- summarizeGroups(peakObj, summary_functions = 
+                                   c("n_present", "prop_present"))
+
+head(group_summary$e_data)
+
+densityPlot(peakObj, samples = FALSE, groups = c("S", "C"), variable = "NOSC",
+            title = "Comparison of NOSC between crop types")
+
+# We might also want to look at which peaks occur only in one group or another, versus those that appear 
+# in both groups. The number or proportion of samples for which a peak must be observed can be specified 
+# to determine if a peak was present for a group. Similarly, a threshold based on the number or proportion 
+# of samples can be specified to determine when a peak is absent from a group. Alternatively, a statistical 
+# test called the G-Test can be used. This is a likelihood ratio test which tests the hypothesis that the 
+# presence/absence of a peak across samples is independent of group membership.
+
+# The first step is to create peakData objects that each contain two groups to facilitate group comparisons
+
 
 
 
