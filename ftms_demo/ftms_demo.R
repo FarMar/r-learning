@@ -127,3 +127,10 @@ peakObj <- applyFilt(emeta_filter(peakObj, "NOSC"), peakObj, min_val = 0.5) #fil
 
 summary(peakObj)
 
+## Visualisations of one sample
+one_sample <- subset(peakObj, samples = "EM0011_sample")
+summary(one_sample)
+
+head(one_sample$e_data)
+
+vanKrevelenPlot(one_sample, title = "EM0011_sample")
