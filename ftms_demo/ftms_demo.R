@@ -101,5 +101,29 @@ table(peakObj$e_meta[, getElCompColName(peakObj)])
 peakObj <- assign_class(peakObj, boundary_set = "bs1")
 table(peakObj$e_meta[, getBS1ColName(peakObj)])
 
+## Filtering
+# There are multiple types of filtering algorithms provided in ftmsRanalysis:
+# Molecule filter: filter rows of e_data to exclude rows observed in too few samples
+# Mass filter: filter rows based on mass, e.g. to reflect observational sensitivity of the instrument
+# Formula filter: filter rows based on whether they have a molecular formula
+# Emeta filter: filter rows of e_data based on a quantity/column in e_meta
 
+filter_obj <- mass_filter(peakObj)
+plot(filter_obj, min_mass = 200, max_mass = 1000)
+
+summary(peakObj)
+
+# We then apply the filter to peakObj
+peakObj <- applyFilt(filter_obj, peakObj, min_mass = 200, max_mass = 900)
+summary(peakObj)
+
+# Other filtering options include number of molecule observations, formula presence or absence, 
+# or emeta columns.
+
+peakObj <- applyFilt(molecule_filter(peakObj), peakObj, min_num = 2) # remove peaks in fewer than min_num samples
+peakObj <- applyFilt(formula_filter(peakObj), peakObj) # filter peaks without a formula assigned
+peakObj <- applyFilt(emeta_filter(peakObj, "NOSC"), peakObj, min_val = 0.5) #filter peaks outside specified range
+                                                                            #NOSC = nominal oxidation state of Carbon
+
+summary(peakObj)
 
