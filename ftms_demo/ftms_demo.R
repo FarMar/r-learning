@@ -178,6 +178,15 @@ densityPlot(peakObj, samples = FALSE, groups = c("S", "C"), variable = "NOSC",
 
 # The first step is to create peakData objects that each contain two groups to facilitate group comparisons
 
+byGroup <- divideByGroupComparisons(peakObj,
+                                    comparisons = "all") [[1]]$value
 
-
-
+crop_unique <- summarizeGroupComparisons(byGroup,
+                                         summary_functions = "uniqueness_gtest",
+                                         summary_function_params = list(
+                                           uniqueness_gtest = list(pres_fn = "nsamps",
+                                                                   pres_thresh = 2,
+                                                                   pvalue_thresh = 0.05)
+                                         ))
+tail(crop_unique$e_data)
+vanKrevelenPlot(crop_unique, colorCName = "uniqueness_gtest")
