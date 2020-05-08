@@ -50,12 +50,31 @@ peakObj <- as.peakData(ftms12T_edata, ftms12T_fdata, ftms12T_emeta, # The three 
                        )
 
 peakObj
+names(peakObj)
 
+# During construction the empirical formula is calculated
+tail(peakObj$e_meta)
 
+# Useful summary
+summary(peakObj)
 
+# Basic plot
+plot(peakObj)
 
+# Normalising
+# When dealing with ’omics data quantitatively, we often log-transform to stabilize variances and reduce skew 
+# for downstream data processing. Alternatively, it’s common to treat FT-MS data as presence/absence data. We 
+# can use the edata_transform function to transform the data scale for either of these options.
 
+peakObj <- edata_transform(peakObj, data_scale = "log2")
 
+# for presence/absence transformation:
+# `edata_transform(peakObj, data_scale="pres")`
+
+peakObj
+plot(peakObj)
+
+## Calculating meta-data
 
 
 
