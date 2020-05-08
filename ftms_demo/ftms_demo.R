@@ -134,3 +134,19 @@ summary(one_sample)
 head(one_sample$e_data)
 
 vanKrevelenPlot(one_sample, title = "EM0011_sample")
+vanKrevelenPlot(one_sample, colorCName = "NtoC_ratio",
+                title = "Colour by N:C ratio", legendTitle = "N:C ratio")
+
+kendrickPlot(one_sample, title = "Kendrick plot for EM0011_sample")
+
+densityPlot(one_sample, variable = "NOSC", plot_curve = TRUE, plot_hist = TRUE,
+            title = "NOSC distribution for EM0011_sample")
+
+densityPlot(one_sample, variable = "kmass.CH2", 
+            title = "Kendrick mass for EM0011_sample",
+            plot_hist = TRUE, plot_curve = FALSE, yaxis = "count")
+
+## Comparison of experimental groups
+
+
+
