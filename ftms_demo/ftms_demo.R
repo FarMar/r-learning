@@ -31,3 +31,33 @@ str(ftms12T_fdata)
 
 data("ftms12T_emeta")
 str(ftms12T_emeta)
+
+## Constructing a peakData object.
+## This is how the package ties the three aspects of the data together
+
+peakObj <- as.peakData(ftms12T_edata, ftms12T_fdata, ftms12T_emeta, # The three data frames, in this order
+                       edata_cname = "Mass",                        # Column name for edata - must match name in df
+                       fdata_cname = "SampleID",                    # Column name for fdata
+                       mass_cname = "Mass",                         # Column name for emeta Mass
+                       c_cname = "C",
+                       h_cname = "H",
+                       o_cname = "O",
+                       n_cname = "N",
+                       s_cname = "S",
+                       p_cname = "P",
+                       isotopic_cname = "C13",
+                       isotopic_notation = "1"
+                       )
+
+peakObj
+
+
+
+
+
+
+
+
+
+
+
