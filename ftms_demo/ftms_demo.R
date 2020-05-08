@@ -75,8 +75,31 @@ peakObj
 plot(peakObj)
 
 ## Calculating meta-data
+# It is frequently useful for biological analysis and interpretation to calculate values related to chemical 
+# properties of each peak, such as the nominal oxidation state of Carbon (NOSC), aromaticity, and elemental 
+# ratios. This can be done via the compound_calcs function. By default, this function calculates all available 
+# meta-data fields, specific fields can be chosen with the calc_fns parameter.
 
+peakObj <- compound_calcs(peakObj)
+peakObj
 
+# Classification of compounds based on their elemental composition is often desirable. The 
+# `assign_elemental_composition` function accomplishes this task.
+
+peakObj <- assign_elemental_composition(peakObj)
+table(peakObj$e_meta[, getElCompColName(peakObj)])
+
+# Further, each compound formula can also be assigned to biochemical compound classes (e.g. lipids, lignins, 
+# etc.) based on their chemical properities (e.g. O:C, H:C ratios), and the `assign_class` function performs this 
+# assignment.
+# There are three sets of class boundary definitions that may be used (for the boundary_set parameter) 
+# corresponding to the following publications:
+# bs1 - Kim, S., et al (2003). Analytical Chemistry.
+# bs2 - Bailey, V. et al (2017). Soil Biology and Biochemistry.
+# bs3 - Rivas-Ubach, A., et al (2018). Analytical chemistry.
+
+peakObj <- assign_class(peakObj, boundary_set = "bs1")
+table(peakObj$e_meta[, getBS1ColName(peakObj)])
 
 
 
