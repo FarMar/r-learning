@@ -3,6 +3,7 @@
 # Find libraries
 install.packages("devtools")
 devtools::install_github("EMSL-Computing/ftmsRanalysis")
+devtools::install_github("delta-rho/datadr")
 
 # Attach packages
 
@@ -159,8 +160,6 @@ getGroupDF(peakObj)
 # of samples in which peak is observed. The resulting object’s e_data element contains one column per group, 
 # per summary function.
 
-# ****WARNING - IT APPEARS THAT `summarizeGroups` RELIES ON A DEPRICATED PACKAGE `datadr`
-
 group_summary <- summarizeGroups(peakObj, summary_functions = 
                                    c("n_present", "prop_present"))
 
@@ -190,3 +189,4 @@ crop_unique <- summarizeGroupComparisons(byGroup,
                                          ))
 tail(crop_unique$e_data)
 vanKrevelenPlot(crop_unique, colorCName = "uniqueness_gtest")
+
