@@ -273,6 +273,7 @@ yearly_counts <- magic_veg  %>% # brings in the data
           legend.position = "bottom", 
           legend.box.background = element_rect(color = "grey", size = 0.3)))
 
+## 
 
 
 
