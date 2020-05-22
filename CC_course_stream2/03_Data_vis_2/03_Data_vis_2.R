@@ -273,7 +273,35 @@ yearly_counts <- magic_veg  %>% # brings in the data
           legend.position = "bottom", 
           legend.box.background = element_rect(color = "grey", size = 0.3)))
 
-## 
+## Dot plots, note error bars 
 
+# Step 1 - create summarised data
+
+summary <- species_counts %>% 
+  group_by(land) %>% 
+  summarise(mean = mean(Species_number),
+            sd = sd(Species_number))
+
+# Step 2 - draw the plot
+
+(dot <- ggplot(summary, aes(x = land, y = mean, colour = land)) +
+    geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.2) +
+    geom_point(size = 3) +
+    scale_y_continuous(limits = c(0, 50)) +
+    scale_colour_manual(values = c('#CD5C5C', '#6CA6CD'), 
+                        labels = c('HOGSMEADE', 'NARNIA'), 
+                        name = 'Land of Magic') +                   
+    labs(title = 'Average species richness', 
+         x = '', y = 'Number of species \n') + 
+    theme_bw() +
+    theme(panel.grid = element_blank(), 
+          axis.text = element_text(size = 12), 
+          axis.title = element_text(size = 12), 
+          plot.title = element_text(size = 14, hjust = 0.5, face = 'bold'), 
+          plot.margin = unit(c(0.5,0.5,0.5,0.5), units = , 'cm'), 
+          legend.title = element_text(face = 'bold'),
+          legend.position = 'bottom', 
+          legend.box.background = element_rect(color = 'grey', size = 0.3))
+    )
 
 
