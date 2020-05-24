@@ -304,4 +304,35 @@ summary <- species_counts %>%
           legend.box.background = element_rect(color = 'grey', size = 0.3))
     )
 
+# Reminder, data needs reordering in the dataframe to change order on the figure
+
+yearly_counts$land <- factor(yearly_counts$land, 
+                             levels = c("Narnia", "Hogsmeade"),
+                             labels = c("Narnia", "Hogsmeade"))
+
+# Now Narnia will always be before Hogsmeade
+
+(boxplot <- ggplot(yearly_counts, aes(x = plot, y = Species_number, fill = land)) +
+    geom_boxplot() +
+    scale_x_discrete(breaks = 1:6) +
+    scale_fill_manual(values = c("#deebf7", "rosybrown1"),
+                      breaks = c("Narnia","Hogsmeade"),
+                      name = "Land of magic",
+                      labels = c("Narnia", "Hogsmeade")) +
+    labs(title = "Species richness by plot", 
+         x = "\n Plot number", y = "Number of species \n") + 
+    theme_bw() +
+    theme() +
+    theme(panel.grid = element_blank(), 
+          axis.text = element_text(size = 12), 
+          axis.title = element_text(size = 12), 
+          plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+          plot.margin = unit(c(0.5,0.5,0.5,0.5), units = , "cm"), 
+          legend.position = "bottom", 
+          legend.box.background = element_rect(color = "grey", size = 0.3))
+    )
+
+
+
+
 
