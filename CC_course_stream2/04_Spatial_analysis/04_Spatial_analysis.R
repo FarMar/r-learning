@@ -6,6 +6,10 @@
 
 #### Their webpage is here: https://ourcodingclub.github.io/tutorials/spatial/ ######################
 
+## NB: probably not my intention to get good at this, but a "good enough" state would be the ########
+## application of these skills to map the FCNSW flooding extent. Another would be to do the #########
+## definitive rainfall map for the SA transect. #####################################################
+
 #####################################################################################################
 
 
@@ -33,6 +37,31 @@ tay <- raster("taycrop.tif")
 tay
 
 # We can create individual raster layers for each of the spectral bands in the raster tay.
+b1 <- raster("taycrop.tif", band = 1)
+b2 <- raster("taycrop.tif", band = 2)
+b3 <- raster("taycrop.tif", band = 3)
+b4 <- raster("taycrop.tif", band = 4)
+b5 <- raster("taycrop.tif", band = 5)
+b6 <- raster("taycrop.tif", band = 6)
+b7 <- raster("taycrop.tif", band = 7)
+b8 <- raster("taycrop.tif", band = 8)
+b9 <- raster("taycrop.tif", band = 9)
+b10 <- raster("taycrop.tif", band = 10)
+b11 <- raster("taycrop.tif", band = 11)
+b12 <- raster("taycrop.tif", band = 12)
 
+# compare two bands to see if they have the same extent, number of rows and column, projection, resolution and origin
+compareRaster(b2, b3)
 
+# View a raster
+plot(b8)
+image(b8)
 
+# zoom in on a raster
+plot(b8)
+zoom(b8)
+
+plot(tay)
+e <- drawExtent()
+cropped_tay <- crop(b7, e)
+plot(cropped_tay)
