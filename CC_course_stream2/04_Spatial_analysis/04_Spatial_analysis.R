@@ -65,3 +65,12 @@ plot(tay)
 e <- drawExtent()
 cropped_tay <- crop(b7, e)
 plot(cropped_tay)
+
+# Visulaise spectral bands using `viridis` and save
+#Save
+png("tayplot.png", width = 4, height = 4, units = "in", res = 300)
+image(b8, col = viridis_pal(option = "D") (10), main = "Sentinel 2 image of Loch Tay")
+dev.off()
+
+#Visualise
+image(b8, col = viridis_pal(option = "D") (10), main = "Sentinel 2 image of Loch Tay")
