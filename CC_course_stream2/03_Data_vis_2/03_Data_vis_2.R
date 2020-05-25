@@ -393,7 +393,8 @@ theme_coding <- function(){               # creates a new theme as a function
 # 2) Sort out summarising as required
 # 3) Sort out orders using `factor` as required
 # 4) Code (or paste) general function for layout, size, etc.
-# 5) Code (or paste) specific function for colours, size, alpha, shape and other attributes
+# 5) Code (or paste) specific function for colours, size, alpha, shape and other attributes e.g. uniform scales
+# and making the x axis border actually zero where it should be (a bugbear of mine in ggplot)
 # 6) Do any plot-specific tidying
 
 # Continuing the tutorial, the next two code chunks produce the same output, but the second saves a lot of typing:
@@ -451,4 +452,42 @@ theme_coding <- function(){               # creates a new theme as a function
     theme(legend.position = "right")      # this overwrites the previous legend position setting
 )
 
-#
+### Challenge time
+# Plot the species richness as a bar plot, coloured not by land this time, but with a shade representing the 
+# % of endemism
+
+# Add "% endemism" to the `more_magic` tibble
+more_magic <- more_magic %>% mutate(endemic = c(0.54, 0.32, 0.66, 0.80, 0.14, 0.24, 0.39))
+
+# Create the bar plot
+(endemic <- ggplot(more_magic, aes(x = land, y = counts, fill = endemic)) +
+                     geom_histogram(stat = 'identity') +
+                     scale_fill_gradient(low = '#87CEEB', high = '#4A708B',
+                                         name = 'Endemism %\n') +
+                     labs(x = 'Magical land', y = 'Species richness\n',
+                          title = 'Species richness and endemism in magical worlds') +
+                     theme_coding() +
+                     theme(legend.position = 'right',
+                           legend.title = element_text(size = 12),
+                           plot.title = element_text(size = 14))
+                                      )
+
+# We can now re-order the magical lands by % endemism if we wish
+# For this we use `reorder` on the x axis command to plot in order of endemism
+
+(endemic <- ggplot(more_magic, aes(x = reorder(land, endemic), y = counts, fill = endemic)) +
+    geom_histogram(stat = 'identity') +
+    scale_fill_gradient(low = '#87CEEB', high = '#4A708B',
+                        name = 'Endemism %\n') +
+    labs(x = 'Magical land', y = 'Species richness\n',
+         title = 'Species richness and endemism in magical worlds') +
+    theme_coding() +
+    theme(legend.position = 'right',
+          legend.title = element_text(size = 12),
+          plot.title = element_text(size = 14))
+)
+
+
+
+
+
