@@ -74,3 +74,7 @@ dev.off()
 
 #Visualise
 image(b8, col = viridis_pal(option = "D") (10), main = "Sentinel 2 image of Loch Tay")
+
+
+
+
