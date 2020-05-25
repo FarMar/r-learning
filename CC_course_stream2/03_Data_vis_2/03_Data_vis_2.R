@@ -332,7 +332,54 @@ yearly_counts$land <- factor(yearly_counts$land,
           legend.box.background = element_rect(color = "grey", size = 0.3))
     )
 
+# We can also reorder the sequence of plot numbers in the same way
 
+yearly_counts$plot <- factor(yearly_counts$plot,
+                             levels = c("6", "1", "2", "3", "4", "5"),
+                             labels = c("6", "1", "2", "3", "4", "5"))
+
+# Easy :)
+
+(boxplot2 <- ggplot(yearly_counts, aes(x = plot, y = Species_number, fill = land)) +
+    geom_boxplot() +
+    scale_x_discrete(breaks = 1:6) +
+    scale_fill_manual(values = c("#deebf7", "rosybrown1"),
+                      breaks = c("Narnia","Hogsmeade"),
+                      name = "Land of magic",
+                      labels = c("Narnia", "Hogsmeade")) +
+    labs(title = "Species richness by plot", 
+         x = "\n Plot number", y = "Number of species \n") + 
+    theme_bw() + 
+    theme() + 
+    theme(panel.grid = element_blank(), 
+          axis.text = element_text(size = 12), 
+          axis.title = element_text(size = 12), 
+          plot.title = element_text(size = 14, hjust = 0.5, face = "bold"), 
+          plot.margin = unit(c(0.5,0.5,0.5,0.5), units = , "cm"), 
+          legend.position = "bottom", 
+          legend.box.background = element_rect(color = "grey", size = 0.3)))
+
+## Creating customised themes
+# You can include as many elements in your theme as you want, and when you apply your theme to a graph, 
+# only the relevant elements will be considered - e.g. for our histograms we won’t need to use legend.position, 
+# but it’s fine to keep it in the theme in case any future graphs we apply it to do have the need for legends.
+
+theme_coding <- function(){               # creates a new theme as a function
+  theme_bw() +                            # uses this predefined theme as a starting point
+    theme(axis.text.x = element_text(size = 12, angle = 45, 
+                                     vjust = 1, hjust = 1), # customising font size, angle, justification
+          axis.text.y = element_text(size = 12),            # customising font size
+          axis.title = element_text(size = 14),             # customising font size
+          panel.grid = element_blank(),                     # Blank panels
+          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5),         # nice plot margins
+                             units = , "cm"), 
+          plot.title = element_text(size = 20, vjust = 1,   # customising font size, angle, justification
+                                    hjust = 0.5),
+          legend.text = element_text(size = 12,             # customising font size, format
+                                     face = "italic"),
+          legend.title = element_blank(),                   # Blank font panel
+          legend.position = c(0.9, 0.9))                    # Legend position
+}
 
 
 
