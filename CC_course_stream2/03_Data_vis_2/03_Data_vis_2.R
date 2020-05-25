@@ -381,5 +381,74 @@ theme_coding <- function(){               # creates a new theme as a function
           legend.position = c(0.9, 0.9))                    # Legend position
 }
 
+# This is something to work though in great detail as it will save a lot of effort to have something uniform.
+# I can see having multiple themes may be useful when producing figures for a dataset. One that covers the basics
+# such as the above (font formats, backgrounds, positions) which may be pretty universal for every figure / dataset,
+# and one that handles colours, shapes and alpha for consistency within a dataset. The first would need some 
+# altering for my purposes (italic labels are yuck, for example), but it would automate a lot of fixes I usually
+# spend ages doing in SigmaPlot. 
 
+# A flow of work for datavis may well follow:
+# 1) Import / tidy data
+# 2) Sort out summarising as required
+# 3) Sort out orders using `factor` as required
+# 4) Code (or paste) general function for layout, size, etc.
+# 5) Code (or paste) specific function for colours, size, alpha, shape and other attributes
+# 6) Do any plot-specific tidying
 
+# Continuing the tutorial, the next two code chunks produce the same output, but the second saves a lot of typing:
+
+# Hard-coded
+
+(boxplot <- ggplot(yearly_counts, aes(x = plot, y = Species_number, fill = land)) +
+    geom_boxplot() +
+    scale_x_discrete(breaks = 1:6) +
+    scale_fill_manual(values = c("#deebf7", "rosybrown1"),
+                      breaks = c("Narnia","Hogsmeade"),
+                      name = "Land of magic",
+                      labels = c("Narnia", "Hogsmeade")) +
+    labs(title = "Species richness by plot", 
+         x = "\n Plot number", y = "Number of species \n") + 
+    theme_bw()+                          # using a predefined theme as a base
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),       # customising lots of things
+          axis.text.y = element_text(size = 12),
+          axis.title = element_text(size = 14),
+          panel.grid = element_blank(),
+          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+          plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+          legend.text = element_text(size = 12, face = "italic"),
+          legend.title = element_blank(),
+          legend.position = c(0.9, 0.9))
+)
+
+# Using the `theme_coding` function:
+
+(boxplot <- ggplot(yearly_counts, aes(x = plot, y = Species_number, fill = land)) +
+    geom_boxplot() +
+    scale_x_discrete(breaks = 1:6) +
+    scale_fill_manual(values = c("#deebf7", "rosybrown1"),
+                      breaks = c("Narnia","Hogsmeade"),
+                      name = "Land of magic",
+                      labels = c("Narnia", "Hogsmeade")) +
+    labs(title = "Species richness by plot", 
+         x = "\n Plot number", y = "Number of species \n") + 
+    theme_coding()                      # short and sweeeeet!
+)
+
+# And if you need to change some elements (like the legend that encroaches on the graph here), 
+# you can simply overwrite:
+
+(boxplot <- ggplot(yearly_counts, aes(x = plot, y = Species_number, fill = land)) +
+    geom_boxplot() +
+    scale_x_discrete(breaks = 1:6) +
+    scale_fill_manual(values = c("#deebf7", "rosybrown1"),
+                      breaks = c("Narnia","Hogsmeade"),
+                      name = "Land of magic",
+                      labels = c("Narnia", "Hogsmeade")) +
+    labs(title = "Species richness by plot", 
+         x = "\n Plot number", y = "Number of species \n") + 
+    theme_coding() +                      # this contains legend.position = c(0.9, 0.9)
+    theme(legend.position = "right")      # this overwrites the previous legend position setting
+)
+
+#
