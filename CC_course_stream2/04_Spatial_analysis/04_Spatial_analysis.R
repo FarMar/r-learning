@@ -153,3 +153,18 @@ plot(s_tay)
 
 ### NDVI and other useful indices
 
+# The NDVI ratio is calculated using (NIR - Red) / (NIR + Red). For example, a pixel with an NDVI of less than 0.2 
+# is not likely to be dominated by vegetation, and an NDVI of 0.6 and above is likely to be dense vegetation. In R,
+# we can calculate the NDVI by creating a function and using raster math operations where NIR = band 8 and 
+# Red = band 4 in Sentinel 2 images. We will first use the raster brick we created earlier from the original file.
+
+## Create a Vegetation Index (VI) function
+VI <- function(img, k, i) {
+  bk <- img [[k]]
+  bi <- img [[i]]
+  vi <- (bk - bi) / (bk + bi)
+  return(vi)
+  }
+
+
+
