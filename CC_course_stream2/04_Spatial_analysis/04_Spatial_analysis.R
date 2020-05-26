@@ -206,3 +206,28 @@ dev.off()
 veg <- reclassify(ndvi, cbind(-Inf, 0.4, NA))
 plot(veg, main = "Vegetation cover")
 
+## Writing the processed raster
+writeRaster(x = ndvi,
+            filename = "tay_ndvi_2018.tif",
+            format = "GTiff",
+            datatype = "INT2S"
+            )
+
+tayNDVI <- raster("tay_ndvi_2018.tif")
+tayNDVI
+plot(tayNDVI)
+
+# hmm, very lossy
+
+writeRaster(x = ndvi,
+            filename = "tay_ndvi_2018_float.tif",
+            format = "GTiff",
+)
+
+tayNDVIfloat <- raster("tay_ndvi_2018_float.tif")
+tayNDVIfloat
+plot(tayNDVIfloat)
+
+# Still lossy, need to read up on this going forward
+
+
