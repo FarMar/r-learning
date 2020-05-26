@@ -117,7 +117,27 @@ plotRGB(tayRGB, axes = TRUE, stretch = "lin", main = "Sentinel RGB colour compos
 # To visualise all the bands together, we can use facet_wrap in gplot. First, we will create a stack of all the 
 # bands, so just putting them all on top of each other, like layers in a cake.
 
+t <- stack(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12)
 
+# Now we are ready to make out facetted plots
 
+(gplot(t) +
+    geom_raster(aes(x = x, y = y, fill = value)) +
+    scale_fill_viridis_c() +
+    facet_wrap(~variable) +
+    coord_quickmap() +
+    ggtitle("Sentinel 2 Loch tay, raster plots") +
+    xlab("Longitude") +
+    ylab("Latitude") +
+    theme_classic() +
+    theme(text = element_text(size=20),
+          axis.text.x = element_text(angle = 90, hjust = 1)) +
+    theme(plot.title = element_text(hjust = 0.5))
+  )
 
+# Alternatively, for a quick visualisation, the original file can be loaded as a raster brick and 
+# plotted using ‘plot’.
+
+s_tay <- brick("taycrop.tif")
+plot(s_tay)
 
