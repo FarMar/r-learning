@@ -141,3 +141,15 @@ t <- stack(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12)
 s_tay <- brick("taycrop.tif")
 plot(s_tay)
 
+# Different earth surfaces reflect the solar radiation differently and each raster layer represents how much 
+# incident solar radiation is reflected at a particular wavelength bandwidth. Bands 6 to 9 are in the Near 
+# Infrared Range (NIR). Vegetation reflects more NIR than other wavelengths but water absorbs NIR, therefore the 
+# lighter areas with high reflectance values are likely to be vegetation and the dark blue, low reflectance value 
+# areas, likely to be water. Also note that the Sentinel 2 bands have 3 levels of spatial resolution, 10 m, 20 m, 
+# and 60 m (see summary below).
+# 10 m resolution band 2, band 3, band 4 and band 8
+# 20 m resolution band 5, band 6, band 7, band 11 and band 12
+# 60 m resolution band 1, band 9 and band 10
+
+### NDVI and other useful indices
+
