@@ -75,6 +75,16 @@ dev.off()
 #Visualise
 image(b8, col = viridis_pal(option = "D") (10), main = "Sentinel 2 image of Loch Tay")
 
+# A useful way to visualise the satellite data is to plot a red-green-blue plot of a multi-layered object 
+# for a more realistic rendition. The layers or bands represent different bandwidth in the visible electromagnetic 
+# spectrum (corresponding to red, blue and green) and combined, create a naturalistic colour rendition of the 
+# earth surface.
 
+# First, create a raster stack, a multi-layered raster object, of the red(b4), green(b3) and blue(b2) bands.
 
+tayRGB <- stack(list(b4, b3, b2))
+
+# Plot the raster stack
+
+plotRGB(tayRGB, axes = TRUE, stretch = "lin", main = "Sentinel RGB colour composite image")
 
