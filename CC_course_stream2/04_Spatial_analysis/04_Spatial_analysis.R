@@ -172,3 +172,15 @@ VI <- function(img, k, i) { # info in brackets provides help on exected format
 ndvi <- VI(s_tay, 8, 4) # following the function's inputs of image name, NIR band, red band
 plot(ndvi, col = rev(terrain.colors(10)), main = "Sentinel 2, Loch Tay NDVI")
 
+# We can now analyse the calculated rastor file to show the distribution of NDVI in the file. This would be
+# really useful for the forestry project, particularly if coupled with moisture data from sentinel. I could then
+# establish driest and wettest times in the forest to relate to soil properties measured and plant health / 
+# productivity. This definitely needs exploring further, particularly extracting numeric data from the raster
+# file for statistical analysis. First task will be to work out how to apply a shape file to crop the raster.
+
+
+
+
+
+
+
