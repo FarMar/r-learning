@@ -230,4 +230,57 @@ plot(tayNDVIfloat)
 
 # Still lossy, need to read up on this going forward
 
+### Unsupervised classification
+# Raster operations also allow us to perform an unsupervised classification, or a clustering of the pixels, 
+# in the satellite image. In this context, unsupervised means that we are not using training data for the 
+# clustering. This type of classification can be useful when not a lot is known about an area. In the example 
+# below, we are going to use the kmeans algorithm. The algorithm groups pixels that have similar spectral 
+# properties in the same cluster. We are going to create 10 clusters using the NDVI raster we have just created 
+# above, but first, we need to convert the raster into an array, which is the object format required for the 
+# classification.
 
+# This might be useful to see how the 40 sites we have in the NSW forest fall regarding moisture and NDVI. Needs
+# more reading...
+
+# convert the raster to vector/matrix ('getValues' converts the RasterLAyer to array)
+nr <- getValues(ndvi)
+str(nr)
+
+# important to set the seed generator because `kmeans` initiates the centres in random locations the seed 
+# generator just generates random numbers
+set.seed(99)
+
+# create 10 clusters, allow 500 iterations, start with 5 random sets using 'Lloyd' method
+kmncluster <- kmeans(na.omit(nr), 
+                     centers = 10, 
+                     iter.max = 500,
+                     nstart = 5,
+                     algorithm = "Lloyd"
+                     )
+str(kmncluster)
+
+# Kmeans returns an object with 9 elements. The length of the cluster element within kmncluster is 429936 which 
+# is the same as the length of nr created from the ndvi object. The cell values of kmncluster$cluster range between 
+# 1 to 10 corresponding to the input number of clusters we provided in the kmeans() function. kmncluster$cluster 
+# indicates the cluster label for the corresponding pixel. Our classification is now complete, and to visualise 
+# the results, we need to convert the kmncluster$cluster array back to a RasterLayer of the same dimension as the 
+# ndvi object.
+
+# First create a copy of the ndvi layer
+knr <- ndvi
+
+# Now replace raster cell values with kmncluster$cluster array
+knr[] <- kmncluster$cluster
+
+# Alternative way to achieve the same result
+values(knr) <- kmncluster$cluster
+knr
+
+# We can see that knr is a RasterLayer with 429,936 cells, but we do not know which cluster (1-10) belongs what 
+# land cover or vegetation type. One way of attributing a class to a land cover type is by plotting the cluster 
+# side-by-side with a reference layer of land cover and using unique colours for each cluster. As we don’t have one 
+# for our example area, we can use the NDVI map we created earlier or the RGB plot.
+
+par(mfrow = c(1, 2))
+plot(ndvi, col = rev(terrain.colors(10)), main = "NDVI")
+plot(knr, col = viridis_pal(option = "D")(10), main = "Kmeans")
