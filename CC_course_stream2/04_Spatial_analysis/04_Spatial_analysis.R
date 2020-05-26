@@ -284,3 +284,16 @@ knr
 par(mfrow = c(1, 2))
 plot(ndvi, col = rev(terrain.colors(10)), main = "NDVI")
 plot(knr, col = viridis_pal(option = "D")(10), main = "Kmeans")
+
+# Or together in a plot....
+
+png("rgb_kmeans.png", width = 10, height = 8, units = "in", res = 600)
+par(mar = c(10.8, 5, 10.8, 2), mfrow = c(1, 2))
+plotRGB(tayRGB, axes = TRUE, stretch = "lin", main = "RGB")
+plot(knr, main = "Kmeans", yaxt = "n", col = viridis_pal(option = "D")(10))
+dev.off()
+
+# A simple classification like this one is only to give an idea of land cover types. In the above example, we 
+# could deduce that cluster 8, in green, is water as it covers the Loch. We can also spot patterns in the vegetation 
+# cover in both the NDVI and kmeans cluster plots. We could deduce that the areas with the highest NDVI ratio are 
+# likely to be forest cover.
