@@ -178,9 +178,31 @@ plot(ndvi, col = rev(terrain.colors(10)), main = "Sentinel 2, Loch Tay NDVI")
 # productivity. This definitely needs exploring further, particularly extracting numeric data from the raster
 # file for statistical analysis. First task will be to work out how to apply a shape file to crop the raster.
 
+hist(ndvi,
+     main = "Distribution of NDVI values",
+     xlab = "NDVI",
+     ylab = "Frequency",
+     col = "red",
+     xlim = c(-0.5, 1),
+     breaks = 30,
+     xaxt = "n")
 
+# Or, to add x-axis ticks and output as a .png:
 
+png('ndvihist.png', width = 4, height = 4, units = "in", res = 300)
+hist(ndvi,
+     main = "Distribution of NDVI values",
+     xlab = "NDVI",
+     ylab = "Frequency",
+     col = "red",
+     xlim = c(-0.5, 1),
+     breaks = 30,
+     xaxt = "n")
+axis(side = 1, at = seq(-0.5, 1, 0.05), labels = seq(-0.5, 1, 0.05))
+dev.off()
 
-
-
+# Mask cells that have NDVI of less than 0.4 (less likely to be vegetation)
+# Reclassifying object and making all values between negative infinity and 0.4 be NAs
+veg <- reclassify(ndvi, cbind(-Inf, 0.4, NA))
+plot(veg, main = "Vegetation cover")
 
