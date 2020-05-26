@@ -159,12 +159,16 @@ plot(s_tay)
 # Red = band 4 in Sentinel 2 images. We will first use the raster brick we created earlier from the original file.
 
 ## Create a Vegetation Index (VI) function
-VI <- function(img, k, i) {
+VI <- function(img, k, i) { # info in brackets provides help on exected format
   bk <- img [[k]]
   bi <- img [[i]]
   vi <- (bk - bi) / (bk + bi)
   return(vi)
   }
 
+# For Sentinel 2, the relevant bands to use are:
+# NIR = 8, red = 4
 
+ndvi <- VI(s_tay, 8, 4) # following the function's inputs of image name, NIR band, red band
+plot(ndvi, col = rev(terrain.colors(10)), main = "Sentinel 2, Loch Tay NDVI")
 
