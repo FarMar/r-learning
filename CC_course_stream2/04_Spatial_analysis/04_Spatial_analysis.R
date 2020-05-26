@@ -88,3 +88,36 @@ tayRGB <- stack(list(b4, b3, b2))
 
 plotRGB(tayRGB, axes = TRUE, stretch = "lin", main = "Sentinel RGB colour composite image")
 
+### False colour composites
+# Another popular way to visualise remote sensing data is using a false colour composite (FCC), where the 
+# red, green, and blue bands have been replaced in order to accentuate vegetation. In a FCC, the red bands is 
+# replaced by the near infrared band (band 8 in Sentinel 2), the green band by red and the blue band by green. 
+# This creates an image where the vegetation stands out in red. Check `(help(plotRGB))`` for more information 
+# and other arguments for the function.
+
+# The package rasterVis provides a number of ways to enhance the visualisation and analysis of raster data, 
+# as can be seen on the package’s website. The function levelplot allows level and contour plots to be 
+# made of raster objects with elevation data, such as LIDAR and plot3D allows 3D mapping. We do not have elevation 
+# data from Sentinel 2, but the package’s gplot function allows us to plot a uni or multivariate raster object 
+# using ggplot2 like syntax.
+
+(gplot(b8) +
+  geom_raster(aes(x = x, y = y, fill = value)) + 
+  scale_fill_viridis_c() +
+  coord_quickmap() +
+  ggtitle("West of Loch Tay, raster plot") +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5),
+        text = element_text(size=20),
+        axis.text.x = element_text(angle = 90, hjust = 1))
+)
+
+# To visualise all the bands together, we can use facet_wrap in gplot. First, we will create a stack of all the 
+# bands, so just putting them all on top of each other, like layers in a cake.
+
+
+
+
+
