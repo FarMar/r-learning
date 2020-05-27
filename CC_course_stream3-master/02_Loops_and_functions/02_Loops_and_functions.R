@@ -188,6 +188,11 @@ for( i in 1:length(trees_mlunguya_list) ){
     trees_mlunguya_list[[i]]$year)
 }
 
+# That's nice, but we'd then want to merge the data frames within the list for it to be any use. For this example
+# it would probably make more sense to find a tidyverse way. But the principle of this tutorial is to show how 
+# functions can be nested in loops
+
+Next up - lapply......
 
 
 
