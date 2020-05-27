@@ -94,3 +94,26 @@ trees_bicuar$ba <- basal.area(trees_bicuar$diam)
 # data, be it raw (LIMS replacement) or for uptake calculations. Not really any different to dragging a formula
 # row around in Excel at this basic level, but good to build on.
 
+#### Loops
+# Loops come in two main variants in R, for() loops and while() loops. In this workshop we will focus on for() loops, 
+# which are generally easier to read than while() loops, and can be used to perform the same sorts of actions. 
+# while() loops are used mainly when the user wants to perform an action a set number of times, whereas a for() 
+# loop is generally used when the user wants to perform an action on a named set of objects.
+#
+# A for() loop iterates through a number of items, most commonly stored as a list, and performs some action equally 
+# on each item. It can drastically reduce the amount of copying and pasting.
+# 
+# The basic syntax for creating a for() loop looks like this:
+
+for(i in list){
+  #PERFORM SOME ACTION
+}
+
+# Imagine you have multiple field sites, each with four 1 Ha plots with the tree stem measurements described earlier. 
+# The data for each fieldsite is contained in a different dataframe, e.g. trees_bicuar and trees_mlunguya. If we 
+# wanted to calculate the basal area for all stems at both sites, we could run:
+
+
+
+
+
