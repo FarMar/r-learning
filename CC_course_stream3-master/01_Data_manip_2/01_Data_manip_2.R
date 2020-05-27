@@ -9,6 +9,8 @@
 
 #####################################################################################################
 
+## I did this a month ago, should be good to revise
+
 
 ### Set working directory
 setwd("~/DATASCHOOL/r-learning/CC_course_stream3-master/01_Data_manip_2/")

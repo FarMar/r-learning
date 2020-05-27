@@ -6,10 +6,12 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
+# Set working directory
+setwd("~/DATASCHOOL/r-learning/CC_course_stream2/01_data_manip_2")
+
 # Load data
 trees <- read.csv(file = "trees.csv", header = TRUE)
 head(trees)
-
 
 ### Count the number of trees by species
 ## stepwise first:
@@ -172,7 +174,9 @@ ggplot(trees.genus.2) +
 
 # Note the NA, indicating that a point wasn't binned to a quadrant correctly. This is likely because the lat/lon
 # splits found at least one point that fell in neither due to it being exactly on the boundary. 
+#
 # A trap for new players.
+#
 # Fix is simple enough - use <= and decide where you want points that fall on the cracks to end up
 # This would be a very similar situation to the 0-10 cm, 10-20 cm problem of soil cores...
 
@@ -200,7 +204,7 @@ acer.percent <- trees.genus.2 %>%
   group_by(Quadrant, Genus) %>%     # comma lets you have sub-group, in this case Quadrant x Genus
   tally() %>%                       # counts the number in each subgroup
   group_by(Quadrant) %>%            # re-groups just by quadrant
-  mutate(total = sum(n)) %>%        # sums the number of trees into a new column
+  mutate(total = sum(n)) %>%        # sums the number of trees into a new column "n"
   filter(Genus == 'Acer') %>%       # filters by genus, to keep only Acer. Note `==` is a strict match
   mutate(percent = n/total)         # calculates the proportion
 
