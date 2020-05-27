@@ -143,6 +143,52 @@ for( i in 1:length(trees) ){
 # column called ba in the first list item in trees, trees[[1]].
 
 ## Loops within dataframes
+# The above example illustrates how loops work, but often, data are not separated into multiple dataframes from the 
+# beginning, instead they are often in a single dataframe with a column to group the different datasets.
+# Returning to the trees_mlunguya dataset, you can see that there is a column called year, which denotes when each 
+# stem measurement was taken. Imagine we want to perform the basal area calculation on each year in the dataset, then 
+# find out whether the mean basal area of stems in the plots has changed over the years. We can do this using a 
+# for() loop.
+# First, separate trees_mlunguya into a list of dataframes, each based on the contents of the year column:
+
+trees_mlunguya_list <- split(trees_mlunguya, trees_mlunguya$year) # Check tidyverse syntax...
+
+# Then, run a for() loop to fill an empty list with the mean basal area of each year:
+
+mean_ba_list <- list()    # The empty list
+
+for( i in 1:length(trees_mlunguya_list) ){
+  ba <- basal.area(trees_mlunguya_list[[i]]$diam)
+  mean_ba <- mean(ba)
+  year <- mean(trees_mlunguya_list[[i]]$year)
+  dat <- data.frame(year, mean_ba)
+  mean_ba_list[[i]] <- dat
+}
+
+# During each iteration, this loop creates a number of intermediate data objects (ba, mean_ba, year), and 
+# eventually returns a dataframe (dat) with a single row and two columns, one for year and one for mean basal 
+# area. Each of these dataframes are then stored as a list item in the new list mean_ba_list.
+#
+# Of course, this intermediate calculation could be stored in it’s own custom function:
+
+ba.mean.year <- function(dbh, year){
+  data.frame(
+    mean_ba = mean(basal.area(dbh)),
+    year = mean(year)
+  )
+}
+
+ba.mean.year(trees_mlunguya_list[[1]]$diam, trees_mlunguya_list[[1]]$year)
+
+# We can now use this new function in a loop:
+
+for( i in 1:length(trees_mlunguya_list) ){
+  mean_ba_list[[i]] <- ba.mean.year(
+    trees_mlunguya_list[[i]]$diam,
+    trees_mlunguya_list[[i]]$year)
+}
+
+
 
 
 
