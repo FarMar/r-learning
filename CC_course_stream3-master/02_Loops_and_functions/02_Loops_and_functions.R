@@ -55,5 +55,42 @@ example.fn(x = 1, y = 2)
 # is to name a function using . rather than _ which is normally used to define data objects. This isn’t a rule, 
 # but it’s best to stick to the conventions used by other programmers to keep things consistent.
 
+# we can also define a function that calculates the basal area of each stem in m^2 from the diameter, which is in 
+# cm. The basal area is the cross-sectional area of the tree trunk if it was cut parallel to the ground.
 
+basal.area <- function(x) {
+  (pi*(x)^2)/40000
+}
+
+basal.area(x = trees_bicuar$diam)
+
+# Function arguments don’t need to be called x and y, they can be any character string, for example, the function 
+# below works identically to the one above, only x is now referred to as dbh:
+
+basal.area <- function(dbh) {
+  (pi*(dbh)^2)/40000
+}
+
+basal.area(dbh = trees_bicuar$diam)
+
+# Additionally, you can add a indeterminate number of extra arguments using the `...` operator. Imagine that we 
+# want to extend our `basal.area()` function so that it can compute the combined basal area of multiple vectors 
+# of diameter measurements, e.g. from multiple sites:
+
+basal.area <- function(...) {
+  (pi*c(...)^2)/40000
+}
+
+basal.area(trees_bicuar$diam, trees_mlunguya$diam)
+
+# Just like a normal function, the output of basal.area() can be assigned to a new object, for example, as a new 
+# column in trees_bicuar:
+
+trees_bicuar$ba <- basal.area(trees_bicuar$diam)
+
+# Functions are essentially small programs. There's nothing different here between writing out the formula numerous
+# times for each dataset. In my soils world this might be quite useful e.g. for calculating bulk density, applying
+# moisture correction, turning concentractions into stocks. It could also be useful in isotope land for bulk-processing
+# data, be it raw (LIMS replacement) or for uptake calculations. Not really any different to dragging a formula
+# row around in Excel at this basic level, but good to build on.
 
