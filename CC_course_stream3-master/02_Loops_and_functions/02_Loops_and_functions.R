@@ -113,6 +113,36 @@ for(i in list){
 # The data for each fieldsite is contained in a different dataframe, e.g. trees_bicuar and trees_mlunguya. If we 
 # wanted to calculate the basal area for all stems at both sites, we could run:
 
+trees_bicuar$ba <- basal.area(trees_bicuar$diam)
+trees_mlunguya$ba <- basal.area(trees_mlunguya$diam)
+
+## Loops through dataframes
+
+# The above seems fine for now, but what if we had 100 field sites instead of just two? In that case, you can use a 
+# for() loop. First, we have to create a list of dataframes to perform the loop on. There are many ways of doing 
+# this, but the simplest way is:
+
+trees <- list("trees_bicuar" = trees_bicuar, "trees_mlunguya" = trees_mlunguya)
+
+# This makes a list called trees, where each element in the list is a dataframe. List items within a list can be 
+# accessed using double square brackets, e.g. trees[[1]] selects the first list item, the dataframe for trees_bicuar. 
+# We can take advantage of this method of list indexing using square brackets when we construct our for() loop:
+
+for( i in 1:length(trees) ){
+  trees[[i]]$ba <- basal.area(trees[[i]]$diam)
+}
+
+# The first line sets up the loop, similar to how the function() definition worked earlier. 1:length(trees) creates 
+# a sequence of integers from 1 to the length of the list (trees), so in this case the sequence will be 1, 2 as 
+# there are two list items. i will take each value of 1:length(trees) in turn, then run the actions in the curly 
+# brackets once. For example, the first time the loop runs, i will have a value of 1, and the second time i will 
+# have a value of 2. Once the loop has run for the second time, the loop will end, as there are no further values 
+# in 1:length(trees).
+# The body of the loop creates a new column in each dataframe in the list, then runs the function basal.area() 
+# using the diam column from the same dataframe as the input. So, the first time the loop runs, it will create a new 
+# column called ba in the first list item in trees, trees[[1]].
+
+## Loops within dataframes
 
 
 
