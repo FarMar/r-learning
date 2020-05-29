@@ -192,7 +192,9 @@ for( i in 1:length(trees_mlunguya_list) ){
 # it would probably make more sense to find a tidyverse way. But the principle of this tutorial is to show how 
 # functions can be nested in loops
 
-Next up - lapply......
+#### Functions with `lapply()`
+# lapply() runs operations on lists of items, similar to the for() loops above. To replicate the previous for() 
+# loop, where we calculated the mean basal area per year in trees_mlunguya, you can run:
 
 
 
