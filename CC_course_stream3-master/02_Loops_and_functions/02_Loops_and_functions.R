@@ -290,14 +290,58 @@ diam.sum <- function(dbh, mean = TRUE, median = TRUE, ba = TRUE){
 # presume I would go fishing for the bits of output. The main feature of the above was of course the `ifelse` which 
 # allows conditionality. Just playing about in the example, but would be very convenient for getting it to, for
 # example, draw a plot of exponential growth from 14C mineralisation if r2 < x. I suspect I'll be using `grep` a fair
-# bit to parse the outputs for the bits I need to add to the df output
+# bit to parse the outputs for the bits I need to add to the df output.
 
 diam.sum(dbh = trees_bicuar$diam, mean = TRUE, median = FALSE)
 diam.sum(dbh = trees_bicuar$diam)
 
 
+#### Write a loop to plot multiple graphs
+LPI <- read.csv("LPI_data_loops.csv")
 
+vulture <- filter(LPI, Common.Name == "Griffon vulture / Eurasian griffon")
+vultureITCR <- filter(vulture, Country.list == c("Croatia", "Italy"))
 
+(vulture_scatter <- ggplot(vultureITCR, aes(x = year, y = abundance, colour = Country.list)) +
+    geom_point(size = 2) +                                              # Changing point size
+    geom_smooth(method = lm, aes(fill = Country.list)) +                # Adding a linear model fit and colour-coding by country
+    scale_fill_manual(values = c("#EE7600", "#00868B")) +               # Adding custom colours
+    scale_colour_manual(values = c("#EE7600", "#00868B"),               # Adding custom colours
+                        labels = c("Croatia", "Italy")) +               # Adding labels for the legend
+    ylab("Griffon vulture abundance\n") +                             
+    xlab("\nYear")  +
+    theme_bw() +
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),       # making the years at a bit of an angle
+          axis.text.y = element_text(size = 12),
+          axis.title.x = element_text(size = 14, face = "plain"),             
+          axis.title.y = element_text(size = 14, face = "plain"),             
+          panel.grid.major.x = element_blank(),                                # Removing the background grid lines                
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_blank(),  
+          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),           # Adding a 0.5cm margin around the plot
+          legend.text = element_text(size = 12, face = "italic"),              # Setting the font for the legend text
+          legend.title = element_blank(),                                      # Removing the legend title
+          legend.position = c(0.9, 0.9)))       
+
+vulture_scatter
+
+theme.my.own <- function(){
+  theme_bw()+
+    theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),
+          axis.text.y = element_text(size = 12),
+          axis.title.x = element_text(size = 14, face = "plain"),             
+          axis.title.y = element_text(size = 14, face = "plain"),             
+          panel.grid.major.x = element_blank(),                                          
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_blank(),  
+          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+          plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+          legend.text = element_text(size = 12, face = "italic"),          
+          legend.title = element_blank(),                              
+          legend.position = c(0.9, 0.9))
+}
 
 
 
