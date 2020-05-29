@@ -326,6 +326,8 @@ vultureITCR <- filter(vulture, Country.list == c("Croatia", "Italy"))
 
 vulture_scatter
 
+# Long, far too much guff. Let's make a formatting function:
+
 theme.my.own <- function(){
   theme_bw()+
     theme(axis.text.x = element_text(size = 12, angle = 45, vjust = 1, hjust = 1),
@@ -343,5 +345,24 @@ theme.my.own <- function(){
           legend.position = c(0.9, 0.9))
 }
 
+(vulture_scatter <- ggplot(vultureITCR, aes (x = year, y = abundance, colour = Country.list)) +
+    geom_point(size = 2) +                                                
+    geom_smooth(method = lm, aes(fill = Country.list)) +                    
+    theme.my.own() +                                                    # Adding our new theme!
+    scale_fill_manual(values = c("#EE7600", "#00868B")) +               
+    scale_colour_manual(values = c("#EE7600", "#00868B"),               
+                        labels = c("Croatia", "Italy")) +                 
+    ylab("Griffon vulture abundance\n") +                             
+    xlab("\nYear"))
+
+# So that's a refresher of what we started before, not lets go further.
+# Let's filter 4 UK species
+
+LPI.UK <- filter(LPI, Country.list == "United Kingdom")
+house.sparrow <- filter(LPI.UK, Common.Name == "House sparrow")
+great.tit <- filter(LPI.UK, Common.Name == "Great tit")
+corn.bunting <- filter(LPI.UK, Common.Name == "Corn bunting")
+reed.bunting <- filter(LPI.UK, Common.Name == "Reed bunting")
+meadow.pipit <- filter(LPI.UK, Common.Name == "Meadow pipit")
 
 
