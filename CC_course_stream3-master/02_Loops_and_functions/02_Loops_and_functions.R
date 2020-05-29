@@ -232,5 +232,30 @@ sapply(bicuar_height_list, mean, na.rm = TRUE)
 test<-as.data.frame(sapply(bicuar_height_list, mean, na.rm = TRUE))
 
 #### Conditional statements
+# In the trees_bicuar data there is a column which refers to the method by which trees_bicuar$height was measured, 
+# called trees_bicuar$height_method. One set of field assistants measured tree height with a long stick, while 
+# the others had access to a laser range finder, affecting the accuracy with which measurements were taken. 
+# Measurements taken with a stick were generally about 1 m short of the actual tree height, while measurements 
+# with the laser scanner is only certified accurate to +/- 0.1 m. So a simple correction would be to add 1 m to 
+# every measurement done with a stick, and round every measurement done with the laser to the nearest 0.1 m.
+
+# A common forestry metric to assess growth of a forest plot over time is “Lorey’s Mean Height”. Lorey’s mean height 
+# is calculated by multiplying tree height by the basal area of the tree, then dividing the sum of this calculation 
+# by the total plot basal area. We can construct a function which measures Lorey’s mean height for each plot, but we 
+# want to adjust the height estimates depending on which method was used. For this, we can use an ifelse() statement.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
