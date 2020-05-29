@@ -13,13 +13,14 @@
 
 
 ### Install packages as needed
-
+install.packages("gridExtra")
 
 
 ### Load packages
 
 library(dplyr)
 library(ggplot2)
+library(gridExtra)
 
 
 ## Import data
@@ -364,5 +365,31 @@ great.tit <- filter(LPI.UK, Common.Name == "Great tit")
 corn.bunting <- filter(LPI.UK, Common.Name == "Corn bunting")
 reed.bunting <- filter(LPI.UK, Common.Name == "Reed bunting")
 meadow.pipit <- filter(LPI.UK, Common.Name == "Meadow pipit")
+
+(house.sparrow_scatter <- ggplot(house.sparrow, aes (x = year, y = abundance)) +
+    geom_point(size = 2, colour = "#00868B") +                                                
+    geom_smooth(method = lm, colour = "#00868B", fill = "#00868B") +          
+    theme.my.own() +
+    labs(y = "Abundance\n", x = "", title = "House sparrow"))
+
+(great.tit_scatter <- ggplot(great.tit, aes (x = year, y = abundance)) +
+    geom_point(size = 2, colour = "#00868B") +                                                
+    geom_smooth(method = lm, colour = "#00868B", fill = "#00868B") +          
+    theme.my.own() +
+    labs(y = "Abundance\n", x = "", title = "Great tit"))
+
+(corn.bunting_scatter <- ggplot(corn.bunting, aes (x = year, y = abundance)) +
+    geom_point(size = 2, colour = "#00868B") +                                                
+    geom_smooth(method = lm, colour = "#00868B", fill = "#00868B") +          
+    theme.my.own() +
+    labs(y = "Abundance\n", x = "", title = "Corn bunting"))
+
+(meadow.pipit_scatter <- ggplot(meadow.pipit, aes (x = year, y = abundance)) +
+    geom_point(size = 2, colour = "#00868B") +                                                
+    geom_smooth(method = lm, colour = "#00868B", fill = "#00868B") +          
+    theme.my.own() +
+    labs(y = "Abundance\n", x = "", title = "Meadow pipit"))
+
+# Using `gridExtra`, we can plot them all at once
 
 
