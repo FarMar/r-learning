@@ -255,8 +255,20 @@ stick.adj.lorey <- function(height, method, ba){
   return(lorey_height)
 }
 
+# We can then test this function on each plot using `lapply`, which returns a list of 4 numbers, 1 for each plot
 
+trees_bicuar_list <- split(trees_bicuar, trees_bicuar$plotcode)
+lapply(trees_bicuar_list, function(x){
+  stick.adj.lorey(
+    height = x$height,
+    method = x$height_method,
+    ba = x$ba
+    )})
 
+# ifelse() statements can also be used in conjunction with logical TRUE/FALSE function arguments to determine 
+# whether certain actions are taken. For example, we can write a function that calculates summary statistics on 
+# the trunk diameter measurements for a given fieldsite, and we can use TRUE/FALSE arguments to let the user decide 
+# whether certain statistics are calculated:
 
 
 
