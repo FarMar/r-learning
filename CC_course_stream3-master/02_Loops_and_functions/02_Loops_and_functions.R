@@ -207,6 +207,15 @@ lapply(trees_mlunguya_list,
 # unnamed function, where x will be replaced with each list item as lapply() iterates over them. The code inside 
 # the curly brackets is the unnamed function, which itself contains our custom function ba.mean.year().
 
+# For another example to illustrate another way lapply() can be used, imagine we wanted to find the mean height 
+# of trees in trees_bicuar for each taxonomic family.
 
+# First, create a list of vectors of height (rather than dataframes) where each list is a different family of species.
+
+bicuar_height_list <- split(trees_bicuar$height, trees_bicuar$family)
+
+# Then run `lapply`
+
+lapply(bicuar_height_list, mean, na.rm = TRUE)
 
 
