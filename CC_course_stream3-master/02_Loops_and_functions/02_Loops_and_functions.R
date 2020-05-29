@@ -196,6 +196,16 @@ for( i in 1:length(trees_mlunguya_list) ){
 # lapply() runs operations on lists of items, similar to the for() loops above. To replicate the previous for() 
 # loop, where we calculated the mean basal area per year in trees_mlunguya, you can run:
 
+lapply(trees_mlunguya_list,
+       function(x){
+         ba.mean.year(dbh = x$diam,
+                      year = x$year)
+       }
+       )
+
+# The first argument of lapply() gives the list object to be iterated over. The second argument defines an 
+# unnamed function, where x will be replaced with each list item as lapply() iterates over them. The code inside 
+# the curly brackets is the unnamed function, which itself contains our custom function ba.mean.year().
 
 
 
