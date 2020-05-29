@@ -21,6 +21,7 @@ install.packages("gridExtra")
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
+library(stringr)
 
 
 ## Import data
@@ -391,5 +392,54 @@ meadow.pipit <- filter(LPI.UK, Common.Name == "Meadow pipit")
     labs(y = "Abundance\n", x = "", title = "Meadow pipit"))
 
 # Using `gridExtra`, we can plot them all at once
+
+panel <- grid.arrange(house.sparrow_scatter, great.tit_scatter, corn.bunting_scatter, meadow.pipit_scatter, ncol = 2)
+ggsave(panel, file = "Pop_trend_panel.png", width = 10, height = 8)
+dev.off()
+
+# That's not so bad, but still lots of typing to do, and even copy / paste that will get boring quickly
+
+Sp_list <- list(house.sparrow, great.tit, corn.bunting, meadow.pipit)
+
+for (i in 1:length(Sp_list)) {
+  data <- as.data.frame(Sp_list[i])   # Create a dataframe for each species
+  sp.name <- unique(data$Common.Name) # Create an object that holds the species name, so that we can title each graph
+  plot <- ggplot(data, aes (x = year, y = abundance)) +               # Make the plots and add our customised theme
+    geom_point(size = 2, colour = "#00868B") +                                                
+    geom_smooth(method = lm, colour = "#00868B", fill = "#00868B") +          
+    theme.my.own() +
+    labs(y = "Abundance\n", x = "", title = sp.name)
+  
+  ggsave(plot, file = paste(sp.name, ".pdf", sep = ''), scale = 2)
+  
+  print(plot) 
+} 
+
+# So heres where i'm going to try to be too clever and do it for all species in LPI.UK. First bit of code culls
+# the "/" and turns them into "-" so that filenames are OK. Needs to be run twice as some have two "/". I should 
+# work on fixing this...
+
+LPI.UK.clean <- LPI.UK %>%
+  mutate_at(vars(contains("Common.Name")), funs(str_replace(., "/", "-")))
+LPI.UK.clean <- LPI.UK.clean %>%
+  mutate_at(vars(contains("Common.Name")), funs(str_replace(., "/", "-")))
+Sp_list_long_df <- LPI.UK.clean %>% group_split(Common.Name) # `group_split` builds the table instead of `list`
+
+for (i in 1:length(Sp_list_long_df)) {
+  data <- as.data.frame(Sp_list_long_df[i])   # Create a dataframe for each species
+  sp.name <- unique(data$Common.Name) # Create an object that holds the species name, so that we can title each graph
+  plot <- ggplot(data, aes (x = year, y = abundance)) +               # Make the plots and add our customised theme
+    geom_point(size = 2, colour = "#00868B") +                                                
+    geom_smooth(method = lm, colour = "#00868B", fill = "#00868B") +          
+    
+    theme.my.own() +
+    labs(y = "Abundance\n", x = "", title = sp.name)
+  
+  ggsave(plot, file = paste(sp.name, ".pdf", sep = ''), scale = 2)
+  
+  print(plot) 
+} 
+
+# It's not fast or parallelised, but it gets there
 
 
