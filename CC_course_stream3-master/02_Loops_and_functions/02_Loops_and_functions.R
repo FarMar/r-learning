@@ -218,4 +218,18 @@ bicuar_height_list <- split(trees_bicuar$height, trees_bicuar$family)
 
 lapply(bicuar_height_list, mean, na.rm = TRUE)
 
+# sapply() simplifies the output of lapply() to a vector, with elements in the vector named according to the name 
+# of the items in the original list:
+
+sapply(bicuar_height_list, mean, na.rm = TRUE)
+
+# OK, now we're talking! I can easily use this to build vectors of means and SEMs then `mutate` to a new tibble. That
+# would be a pretty basic use, but potentailly useful if the output from the `sapply` function is simple. Would need
+# to think carefully about how this could be applied to things like running lots of ANOVA models or curve fitting 
+# for 14C data, for example. `sapply` can only handle simple outputs (note here it's just made a list with attributes). 
+# In fact, i've modified this slightly to build a df using the same code
+
+test<-as.data.frame(sapply(bicuar_height_list, mean, na.rm = TRUE))
+
+
 
