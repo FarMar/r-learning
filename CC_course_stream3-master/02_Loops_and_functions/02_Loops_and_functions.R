@@ -244,7 +244,16 @@ test<-as.data.frame(sapply(bicuar_height_list, mean, na.rm = TRUE))
 # by the total plot basal area. We can construct a function which measures Lorey’s mean height for each plot, but we 
 # want to adjust the height estimates depending on which method was used. For this, we can use an ifelse() statement.
 
+# An ifelse() statement tests for some logical TRUE/FALSE condition in the data, then performs one of two 
+# actions depending on the outcome of the test. E.g. “if the value of x is greater than 2, multiply it by 2, else 
+# if not, divide by 2”. The code below constructs a function with an ifelse() statement to calculate Lorey’s mean 
+# height for the Bicuar plots.
 
+stick.adj.lorey <- function(height, method, ba){
+  height_adj <- ifelse(method == "stick", height +1, round(height, digits = 1))
+  lorey_height <- sum(height_adj * ba, na.rm = TRUE) / sum(ba, na.rm = TRUE)
+  return(lorey_height)
+}
 
 
 
