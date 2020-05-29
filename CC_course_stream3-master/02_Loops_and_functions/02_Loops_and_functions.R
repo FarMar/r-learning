@@ -270,9 +270,30 @@ lapply(trees_bicuar_list, function(x){
 # the trunk diameter measurements for a given fieldsite, and we can use TRUE/FALSE arguments to let the user decide 
 # whether certain statistics are calculated:
 
+diam.sum <- function(dbh, mean = TRUE, median = TRUE, ba = TRUE){
+  mean_dbh <- ifelse(mean == TRUE,
+                     mean(dbh),
+                     NA)
+  median_dbh <- ifelse(median == TRUE,
+                       median(dbh),
+                       NA)
+  mean_ba <- ifelse(ba == TRUE,
+                    mean(basal.area(dbh)),
+                    NA)
+  
+  return(as.data.frame(na.omit(t(data.frame(mean_dbh, median_dbh, mean_ba)))))
+}
 
+# This is the starting point for what could be a very good function if I can tame outputs from ANOVA models etc. I
+# should be able to get it to pull all that I need to from outputs into columns and build the DF all in one go. Need
+# to think carefully about order of operations and input format. The `return` line is the bit, and this is where I
+# presume I would go fishing for the bits of output. The main feature of the above was of course the `ifelse` which 
+# allows conditionality. Just playing about in the example, but would be very convenient for getting it to, for
+# example, draw a plot of exponential growth from 14C mineralisation if r2 < x. I suspect I'll be using `grep` a fair
+# bit to parse the outputs for the bits I need to add to the df output
 
-
+diam.sum(dbh = trees_bicuar$diam, mean = TRUE, median = FALSE)
+diam.sum(dbh = trees_bicuar$diam)
 
 
 
