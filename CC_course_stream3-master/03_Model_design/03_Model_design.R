@@ -85,3 +85,22 @@ toolik_plants <- toolik_plants %>%           # Points what we're about to do bac
     geom_histogram() +
     theme_classic()
   )
+
+(hist2 <- ggplot(toolik_plants, aes(x = Relative.Cover)) +
+    geom_histogram() +
+    theme_classic()
+  )
+
+# Models - all the usual stuff applies here that you've been doing for the past decade in SPSS
+
+plant_m <- lm(Richness ~ I(Year-2007), data = toolik_plants)
+summary(plant_m)
+
+# check the residual versus predicted plot for our linear model. By using the ‘plot()’ function, we can plot the 
+# residuals versus fitted values, a Q-Q plot of standardised residuals, a scale-location plot (square roots of 
+# standardiaed residuals versus fitted values) and a plot of residuals versus leverage that adds bands corresponding 
+# to Cook’s distances of 0.5 and 1. Looking at these plots can help you identify any outliers that have huge 
+# leverage and confirm that your model has indeed run e.g. you want the data points on the Q-Q plot to follow the 
+# one-to-one line.
+
+plot(plant_m)
