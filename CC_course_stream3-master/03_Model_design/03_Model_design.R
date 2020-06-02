@@ -64,3 +64,24 @@ unique(toolik_plants$Species)
 # Plenty of things that don't appear to be species in there. Not pretty. Easiest way is to filter them out, but no 
 # avoiding a lot of typing
 
+toolik_plants <- toolik_plants %>% 
+  filter(!Species %in% c("Woody cover", "Tube",
+                         "Hole", "Vole trail",
+                         "removed", "vole turds",
+                         "Mushrooms", "Water",
+                         "Caribou poop", "Rocks",
+                         "mushroom", "caribou poop",
+                         "animal litter", "vole poop",
+                         "Vole poop", "Unk?"))
+length(unique(toolik_plants$Species))
+
+# Calculate species richness
+toolik_plants <- toolik_plants %>%           # Points what we're about to do back to the original df
+  group_by(Year, Site, Block, Plot) %>%      # Groups by the factors
+  mutate(Richness = length(unique(Species)))  # Adds new column containing richness calcualted for each factor
+
+# Quick histogram to visualise data shape
+(hist <- ggplot(toolik_plants, aes(x = Richness)) +
+    geom_histogram() +
+    theme_classic()
+  )
