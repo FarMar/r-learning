@@ -31,3 +31,36 @@ library(stargazer)
 
 
 ## Import data
+toolik_plants <- read.csv("toolik_plants.csv")
+
+
+## Inspect data
+head(toolik_plants)
+str(toolik_plants)
+
+# Make plot a character and factor
+toolik_plants$Plot <- as.factor(as.character(toolik_plants$Plot))
+
+# Get unique site names
+unique(toolik_plants$Site)
+length(unique(toolik_plants$Site))
+
+# Within each site, there are different numbers of blocks: some sites have three sample blocks, others have 
+# four or five
+toolik_plants %>% group_by(Block) %>% 
+  summarise(plot.n = length(unique(Plot)))
+# Within each block, there are eight smaller plots.
+
+unique(toolik_plants$Year)
+# There are four years of data
+
+# How many species are represented in this data set?
+length(unique(toolik_plants$Species))
+
+# Species list
+unique(toolik_plants$Species)
+
+## Data cleaning
+# Plenty of things that don't appear to be species in there. Not pretty. Easiest way is to filter them out, but no 
+# avoiding a lot of typing
+
