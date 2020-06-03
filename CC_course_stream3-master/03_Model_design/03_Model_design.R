@@ -191,4 +191,23 @@ summary(plant_m_rs)
 ggpredict(plant_m_rs, terms = c("Mean.Temp")) %>% plot()
 ggpredict(plant_m_rs, terms = c("Mean.Temp", "Plot"), type = "re") %>% plot()
 
-# take note of the y axis: it doesn’t actually start at zero
+# take note of the y axis: it doesn’t actually start at zero. Manual plots sort this out.
+# First, the fixed effect
+predictions <- ggpredict(plant_m_rs, terms = c("Mean.Temp"))
+(pred_plot1 <- ggplot(predictions, aes(x, predicted)) +
+    geom_line() +
+    geom_ribbon(aes(ymin= conf.low, ymax = conf.high), alpha = 0.1) +
+    scale_y_continuous(limits = c(0, 22)) +
+    labs(x = "\nMean annual temperature", y = "Predicted species richness\n")
+    )
+# Not exactly an earth-shatteringly strong relationship any more...
+# Let's see the random effect
+predictions_rs_ri <- ggpredict(plant_m_rs, terms = c("Mean.Temp", "Plot"), type = "re")
+(pred_plot2 <- ggplot(predictions_rs_ri, aes(x = x, y = predicted, colour = group)) +
+    stat_smooth(method = "lm", se = FALSE)  +
+    scale_y_continuous(limits = c(0, 22)) +
+    labs(x = "\nMean annual temperature", y = "Predicted species richness\n"))
+
+anova(plant_m_rs)
+# Bates has taken the P https://stat.ethz.ch/pipermail/r-help/2006-May/094765.html
+
