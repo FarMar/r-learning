@@ -159,3 +159,36 @@ plant_m_temp <- lmer(Richness ~ Mean.Temp + (1|Site/Block/Plot) + (1|Year),
 summary(plant_m_temp)
 (temp.re.effects <- plot_model(plant_m_temp, type = "re", show.values = TRUE))
 (temp.fe.effects <- plot_model(plant_m_temp, show.values = TRUE))
+
+## Random slopes vs random intercepts
+# We can now think about having random slopes and random intercepts. For our question, how does temperature 
+# influence species richness, we can allow each plot to have it’s own relationship with temperature.
+
+plant_m_rs <- lmer(Richness ~ Mean.Temp + (Mean.Temp|Site/Block/Plot) + (1|Year), data = toolik_plants)
+summary(plant_m_rs)
+# This model is not converging and we shouldn’t trust its outputs: the model structure is too complicated for the
+# underlying data, so now we can simplify it.
+
+plant_m_rs <- lmer(Richness ~ Mean.Temp + (Mean.Temp|Plot) + (1|Year),
+                   data = toolik_plants)
+summary(plant_m_rs)
+# This one is not converging either! Let’s try with just a Plot random intercept and with random slopes to illustrate 
+# what a random slope model looks like.
+
+plant_m_rs <- lmer(Richness ~ Mean.Temp + (Mean.Temp|Plot),
+                   data = toolik_plants)
+summary(plant_m_rs)
+(plant.re.effects <- plot_model(plant_m_rs, type = "re", show.values = TRUE))
+(plant.fe.effects <- plot_model(plant_m_rs, show.values = TRUE))
+
+# Something funny going on here as not getting plots as shown in tutorial
+
+# We will use the ggeffects package to calculate model predictions and plot them. First, we calculate the 
+# overall predictions for the relationship between species richness and temperature. Then, we calculate the 
+# predictions for each plot, thus visualising the among-plot variation. Note that the second graph has both 
+# freely varying slopes and intercepts (i.e., they’re different for each plot).
+
+ggpredict(plant_m_rs, terms = c("Mean.Temp")) %>% plot()
+ggpredict(plant_m_rs, terms = c("Mean.Temp", "Plot"), type = "re") %>% plot()
+
+# take note of the y axis: it doesn’t actually start at zero
