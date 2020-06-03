@@ -91,9 +91,12 @@ toolik_plants <- toolik_plants %>%           # Points what we're about to do bac
     theme_classic()
   )
 
-# Models - all the usual stuff applies here that you've been doing for the past decade in SPSS
+### Models - all the usual stuff applies here that you've been doing for the past decade in SPSS
+## Simple model - `I(Year-2007)` is turning the Year variable into a numerical series starting at 1 rather than 2008.
+# The I(x) function is what allows the mathematical operator to be conducted on the variable. I assume this is one way
+# of log-transform etc on the fly.
 
-plant_m <- lm(Richness ~ I(Year-2007), data = toolik_plants)
+plant_m <- lm(Richness ~ I(Year-2007), data = toolik_plants) 
 summary(plant_m)
 
 # check the residual versus predicted plot for our linear model. By using the ‘plot()’ function, we can plot the 
@@ -104,3 +107,8 @@ summary(plant_m)
 # one-to-one line.
 
 plot(plant_m)
+
+## Hierarchical models
+
+
+
