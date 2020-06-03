@@ -152,3 +152,10 @@ set_theme(base = theme_bw() +
 
 # Visualise fixed effects:
 (fe.effects <- plot_model(plant_m_plot3, show.values = TRUE))
+
+## Including temperature
+plant_m_temp <- lmer(Richness ~ Mean.Temp + (1|Site/Block/Plot) + (1|Year),
+                     data = toolik_plants)
+summary(plant_m_temp)
+(temp.re.effects <- plot_model(plant_m_temp, type = "re", show.values = TRUE))
+(temp.fe.effects <- plot_model(plant_m_temp, show.values = TRUE))
