@@ -96,6 +96,13 @@ toolik_plants <- toolik_plants %>%           # Points what we're about to do bac
 # The I(x) function is what allows the mathematical operator to be conducted on the variable. I assume this is one way
 # of log-transform etc on the fly.
 
+# Notice how we have transformed the Year column - I(Year - 2007) means that the year 2008 will become Year 1 - then 
+# your model is estimating richness across the first, second, etc., year from your survey period. Otherwise, if we 
+# had kept the years just as 2008, 2009,…, the model would have estimated richness really far back into the past, 
+# starting from Year 1, Year 2… Year 1550 up until 2012. This would make the magnitude of the estimates we get wrong. 
+# You can experiment to see what happens if we just add in Year - suddenly the slope of species change goes in the 
+# hundreds!
+
 plant_m <- lm(Richness ~ I(Year-2007), data = toolik_plants) 
 summary(plant_m)
 
@@ -109,6 +116,30 @@ summary(plant_m)
 plot(plant_m)
 
 ## Hierarchical models
+# First, let’s model with only site as a random effect. This model does not incorporate the temporal replication in 
+# the data or the fact that there are plots within blocks within those sites.
 
+plant_m_plot <- lmer(Richness ~ I(Year-2007) + (1|Site), data = toolik_plants)
+summary(plant_m_plot)
+plot(plant_m_plot)
 
+# Add in block
+plant_m_plot2 <- lmer(Richness ~ I(Year-2007) + (1|Site/Block), data = toolik_plants)
+summary(plant_m_plot2)
+plot(plant_m_plot2)
 
+# Add in plot - This final model answers our question about how plant species richness has changed over time, whilst 
+# also accounting for the hierarchical structure of the data
+plant_m_plot3 <- lmer(Richness ~ I(Year-2007) + (1|Site/Block/Plot), data = toolik_plants)
+summary(plant_m_plot3)
+plot(plant_m_plot3)
+
+## Use `sjplot` to plot the model
+# Set a 'clean' theme
+set_theme(base = theme_bw() +
+            theme(panel.grid.major.x = element_blank(),
+                  panel.grid.minor.x = element_blank(),
+                  panel.grid.minor.y = element_blank(),
+                  panel.grid.major.y = element_blank(),
+                  plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"))
+            )
