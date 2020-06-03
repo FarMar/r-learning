@@ -14,8 +14,7 @@
 
 
 ### Install packages as needed
-install.packages(c("lme4", "sjPlot", "ggeffects", "MCMCglmm", "MCMCvis", "brms", "stargazer"))
-
+install.packages(c("lme4", "sjPlot", "ggeffects", "MCMCglmm", "MCMCvis", "brms", "stargazer", "glmmTMB"))
 
 ### Load packages
 
@@ -28,6 +27,7 @@ library(MCMCglmm)
 library(MCMCvis)
 library(brms)
 library(stargazer)
+library(glmmTMB)
 
 
 ## Import data
@@ -143,3 +143,12 @@ set_theme(base = theme_bw() +
                   panel.grid.major.y = element_blank(),
                   plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"))
             )
+
+# Visualise ramdom effects:
+(re.effects <- plot_model(plant_m_plot3, type = "re", show.values = TRUE))
+# save_plot(filename = "model_re.png", height = 11, width = 9)  # Save the graph if you wish
+# Note how when we visualise our random effects, three different plots come up. The first two show the interaction 
+# effects. Here, we are only interested in the plot that shows us the random effects of site
+
+# Visualise fixed effects:
+(fe.effects <- plot_model(plant_m_plot3, show.values = TRUE))
